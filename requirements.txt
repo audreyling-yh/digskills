@@ -1,0 +1,5 @@
+pandas
+transformers
+xlrd==1.2.0
+seaborn
+networkx
