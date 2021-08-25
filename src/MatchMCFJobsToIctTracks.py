@@ -35,8 +35,8 @@ class MatchMCFJobsToIctTracks:
             df['subtracks_raw'] = subtrack_list
 
             # Get the number of required skills for each main/sub track
-            df['tracks_count'] = df['tracks_raw'].apply(lambda x: Counter(x))
-            df['subtracks_count'] = df['subtracks_raw'].apply(lambda x: Counter(x))
+            df['tracks_count'] = df['tracks_raw'].apply(lambda x: dict(Counter(x)))
+            df['subtracks_count'] = df['subtracks_raw'].apply(lambda x: dict(Counter(x)))
 
             # must have at least x tsc of a track, then we consider the track as required
             df['tracks_final'] = df['tracks_count'].apply(

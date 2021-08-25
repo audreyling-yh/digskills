@@ -12,8 +12,8 @@ def get_all_postings():
     jobs = pd.DataFrame()
 
     postings_folder = filepaths['mcf_jobpostings_digital_tracks']['folder']
-    cols = ['JOB_POST_ID', 'HIRE_ORG_SSIC_CODE', 'ssoc4d', 'ssoc1d', 'date', 'year', 'skill_list', 'tracks_final',
-            'num_tracks_final', 'subtracks_final', 'num_subtracks_final']
+    cols = ['JOB_POST_ID', 'HIRE_ORG_SSIC_CODE', 'ssoc4d', 'ssoc1d', 'date', 'year', 'skill_list', 'tracks_count',
+            'subtracks_count', 'tracks_final', 'num_tracks_final', 'subtracks_final', 'num_subtracks_final']
 
     for i in os.listdir(postings_folder):
         print('Reading {}'.format(i))

@@ -3,16 +3,18 @@ import pandas as pd
 import networkx as nx
 import helper
 import matplotlib.pyplot as plt
+from collections import Counter
+
 
 class ExploreSSOC4DSkills:
     def __init__(self, img_data_filepath, img_filepath):
-        self.img_data_filepath=img_data_filepath
-        self.img_filepath=img_filepath
+        self.img_data_filepath = img_data_filepath
+        self.img_filepath = img_filepath
 
-        self.jobs=None
+        self.jobs = None
 
     def run(self):
-        self.jobs=helper.get_all_postings()
+        self.jobs = helper.get_all_postings()
         self.prep_jobs()
 
         self.get_largest_ssoc4d()
@@ -25,45 +27,51 @@ class ExploreSSOC4DSkills:
         self.explore_ssoc4d_subtracks(ssoc1d=2)
         self.explore_ssoc4d_subtracks(ssoc1d=3)
 
+        self.explore_ssoc4d_subtrack_skills()
+        self.explore_ssoc4d_track_skills()
+
     def prep_jobs(self):
-        self.jobs['tracks_final']=self.jobs['tracks_final'].apply(lambda x: ast.literal_eval(x))
-        self.jobs['subtracks_final']=self.jobs['subtracks_final'].apply(lambda x: ast.literal_eval(x))
+        self.jobs['tracks_final'] = self.jobs['tracks_final'].apply(lambda x: ast.literal_eval(x))
+        self.jobs['subtracks_final'] = self.jobs['subtracks_final'].apply(lambda x: ast.literal_eval(x))
+
+        self.jobs['tracks_count'] = self.jobs['tracks_count'].apply(lambda x: Counter(ast.literal_eval(x)))
+        self.jobs['subtracks_count'] = self.jobs['subtracks_count'].apply(lambda x: Counter(ast.literal_eval(x)))
 
     def get_largest_ssoc4d(self):
-        df=self.jobs.groupby(['SSOC1D','ssoc4d'])['JOB_POST_ID'].count().reset_index()
-        df=df.sort_values(by=['JOB_POST_ID'],ascending=False)
+        df = self.jobs.groupby(['SSOC1D', 'ssoc4d'])['JOB_POST_ID'].count().reset_index()
+        df = df.sort_values(by=['JOB_POST_ID'], ascending=False)
 
-        largest=pd.DataFrame()
+        largest = pd.DataFrame()
         for i in df['SSOC1D'].unique():
-            temp2=df[df['SSOC1D']==i]
-            temp2=temp2.head(5)
-            largest=largest.append(temp2)
+            temp2 = df[df['SSOC1D'] == i]
+            temp2 = temp2.head(5)
+            largest = largest.append(temp2)
         largest.to_csv(self.img_data_filepath.format('ssoc4d_top_postings_count'))
 
-        ssoc_list=largest['ssoc4d']
-        self.jobs=self.jobs[self.jobs['ssoc4d'].isin(ssoc_list)]
+        ssoc_list = largest['ssoc4d']
+        self.jobs = self.jobs[self.jobs['ssoc4d'].isin(ssoc_list)]
 
     def explore_ssoc4d_tracks(self, ssoc1d=1):
-        df=self.jobs[self.jobs['SSOC1D']==ssoc1d]
-        df=df.explode('tracks_final')
+        df = self.jobs[self.jobs['SSOC1D'] == ssoc1d]
+        df = df.explode('tracks_final')
 
-        track_mapping={
-            'professional services':'strategy',
-            'data':'data',
-            'security':'cybersecurity',
-            'software and applications':'software',
-            'infrastructure':'infrastructure',
-            'support':'support'
+        track_mapping = {
+            'professional services': 'strategy',
+            'data': 'data',
+            'security': 'cybersecurity',
+            'software and applications': 'software',
+            'infrastructure': 'infrastructure',
+            'support': 'support'
         }
-        df=df.groupby(['ssoc4d','tracks_final','year'])['JOB_POST_ID'].count().reset_index()
-        df=helper.scale_counts(df,'JOB_POST_ID')
-        df['tracks_final']=[track_mapping[x] for x in df['tracks_final']]
-        helper.save_csv(df,self.img_data_filepath.format('tracks_by_year_top_ssoc{}'.format(str(ssoc1d))))
+        df = df.groupby(['ssoc4d', 'tracks_final', 'year'])['JOB_POST_ID'].count().reset_index()
+        df = helper.scale_counts(df, 'JOB_POST_ID')
+        df['tracks_final'] = [track_mapping[x] for x in df['tracks_final']]
+        helper.save_csv(df, self.img_data_filepath.format('tracks_by_year_top_ssoc{}'.format(str(ssoc1d))))
 
         for i in df['year'].unique():
-            temp=df[df['year']==i]
+            temp = df[df['year'] == i]
 
-            fig,ax=plt.subplots(figsize=(10, 10))
+            fig, ax = plt.subplots(figsize=(10, 10))
             ax.set_title('SSOC4D Main Track Mapping for {}'.format(i))
 
             # plot bipartite graph
@@ -71,7 +79,7 @@ class ExploreSSOC4DSkills:
             B.add_nodes_from(temp['ssoc4d'], bipartite=0)
             B.add_nodes_from(temp['tracks_final'], bipartite=1)
             B.add_weighted_edges_from(
-                [(row['ssoc4d'], row['tracks_final'], row['scaled_JOB_POST_ID']/900) for idx, row in temp.iterrows()],
+                [(row['ssoc4d'], row['tracks_final'], row['scaled_JOB_POST_ID'] / 900) for idx, row in temp.iterrows()],
                 weight='weight')
 
             # Update position for node from each group
@@ -84,7 +92,7 @@ class ExploreSSOC4DSkills:
             color_list = [color_dict[i[1]] for i in B.nodes.data('bipartite')]
             nx.draw_networkx_nodes(B,
                                    pos,
-                                   node_size=[v[1]*300 for v in B.degree],
+                                   node_size=[v[1] * 300 for v in B.degree],
                                    node_color=color_list
                                    )
 
@@ -95,17 +103,67 @@ class ExploreSSOC4DSkills:
                                    alpha=0.6
                                    )
 
-            nx.draw_networkx_labels(B, pos=pos,font_size=10)
+            nx.draw_networkx_labels(B, pos=pos, font_size=10)
 
             ax.axis("off")
-            plt.savefig(self.img_filepath.format('SSOC{}_track_bipartite_{}'.format(str(ssoc1d),str(i))))
+            plt.savefig(self.img_filepath.format('SSOC{}_track_bipartite_{}'.format(str(ssoc1d), str(i))))
             plt.close()
 
-
-    def explore_ssoc4d_subtracks(self,ssoc1d=1):
+    def explore_ssoc4d_subtracks(self, ssoc1d=1):
         df = self.jobs[self.jobs['SSOC1D'] == ssoc1d]
         df = df.explode('subtracks_final')
 
         df = df.groupby(['ssoc4d', 'subtracks_final', 'year'])['JOB_POST_ID'].count().reset_index()
         df = helper.scale_counts(df, 'JOB_POST_ID')
-        helper.save_csv(df,self.img_data_filepath.format('subtracks_by_year_top_ssoc{}'.format(str(ssoc1d))))
+        helper.save_csv(df, self.img_data_filepath.format('subtracks_by_year_top_ssoc{}'.format(str(ssoc1d))))
+
+    def explore_ssoc4d_subtrack_skills(self):
+        # within each ssoc4d and year, avg. number of skills belonging to each subtrack
+        df = pd.DataFrame()
+
+        for ssoc in self.jobs['ssoc4d'].unique():
+            temp=self.jobs[self.jobs['ssoc4d']==ssoc]
+
+            for i in temp['year'].unique():
+                year_temp=temp[temp['year']==i]
+                num_jobs=len(year_temp)
+
+                subtracks_sum=dict(sum(temp['subtracks_count'],Counter()))
+                subtracks=subtracks_sum.keys()
+                subtracks_avg=[x/num_jobs for x in subtracks_sum.values()]
+
+                temp_df = pd.DataFrame(data={'ssoc4d': ssoc, 'year': i, 'subtrack': subtracks, 'avg_skills_required_per_subtrack': subtracks_avg})
+                df = df.append(temp_df)
+
+        df.to_csv(self.img_data_filepath.format('avg_skills_by_subtrack_ssoc4d_year'), index=False)
+
+    def explore_ssoc4d_track_skills(self):
+        track_mapping = {
+            'professional services': 'strategy',
+            'data': 'data',
+            'security': 'cybersecurity',
+            'software and applications': 'software',
+            'infrastructure': 'infrastructure',
+            'support': 'support'
+        }
+
+        # within each ssoc4d and year, avg. number of skills belonging to each track
+        df = pd.DataFrame()
+
+        for ssoc in self.jobs['ssoc4d'].unique():
+            temp = self.jobs[self.jobs['ssoc4d'] == ssoc]
+
+            for i in temp['year'].unique():
+                year_temp = temp[temp['year'] == i]
+                num_jobs = len(year_temp)
+
+                tracks_sum = dict(sum(temp['tracks_count'], Counter()))
+                tracks = tracks_sum.keys()
+                tracks_avg = [x / num_jobs for x in tracks_sum.values()]
+
+                temp_df = pd.DataFrame(data={'ssoc4d': ssoc, 'year': i, 'track': tracks,
+                                             'avg_skills_required_per_track': tracks_avg})
+                df = df.append(temp_df)
+
+        df['track']=[track_mapping[x] for x in df['track']]
+        df.to_csv(self.img_data_filepath.format('avg_skills_by_track_ssoc4d_year'), index=False)

@@ -104,3 +104,5 @@ if __name__ == '__main__':
     # analyse ict skills by SSOC4D
     explore4dskills=ExploreSSOC4DSkills(img_data, img)
     explore4dskills.run()
+
+    # jupyter notebooks
