@@ -122,17 +122,18 @@ class ExploreSSOC4DSkills:
         df = pd.DataFrame()
 
         for ssoc in self.jobs['ssoc4d'].unique():
-            temp=self.jobs[self.jobs['ssoc4d']==ssoc]
+            temp = self.jobs[self.jobs['ssoc4d'] == ssoc]
 
             for i in temp['year'].unique():
-                year_temp=temp[temp['year']==i]
-                num_jobs=len(year_temp)
+                year_temp = temp[temp['year'] == i]
+                num_jobs = len(year_temp)
 
-                subtracks_sum=dict(sum(temp['subtracks_count'],Counter()))
-                subtracks=subtracks_sum.keys()
-                subtracks_avg=[x/num_jobs for x in subtracks_sum.values()]
+                subtracks_sum = dict(sum(year_temp['subtracks_count'], Counter()))
+                subtracks = subtracks_sum.keys()
+                subtracks_avg = [(subtracks_sum[x] / num_jobs) for x in subtracks_sum.keys()]
 
-                temp_df = pd.DataFrame(data={'ssoc4d': ssoc, 'year': i, 'subtrack': subtracks, 'avg_skills_required_per_subtrack': subtracks_avg})
+                temp_df = pd.DataFrame(data={'ssoc4d': ssoc, 'year': i, 'subtrack': subtracks,
+                                             'avg_skills_required_per_subtrack': subtracks_avg})
                 df = df.append(temp_df)
 
         df.to_csv(self.img_data_filepath.format('avg_skills_by_subtrack_ssoc4d_year'), index=False)
@@ -157,13 +158,13 @@ class ExploreSSOC4DSkills:
                 year_temp = temp[temp['year'] == i]
                 num_jobs = len(year_temp)
 
-                tracks_sum = dict(sum(temp['tracks_count'], Counter()))
+                tracks_sum = dict(sum(year_temp['tracks_count'], Counter()))
                 tracks = tracks_sum.keys()
-                tracks_avg = [x / num_jobs for x in tracks_sum.values()]
+                tracks_avg = [(tracks_sum[x] / num_jobs) for x in tracks]
 
                 temp_df = pd.DataFrame(data={'ssoc4d': ssoc, 'year': i, 'track': tracks,
                                              'avg_skills_required_per_track': tracks_avg})
                 df = df.append(temp_df)
 
-        df['track']=[track_mapping[x] for x in df['track']]
+        df['track'] = [track_mapping[x] for x in df['track']]
         df.to_csv(self.img_data_filepath.format('avg_skills_by_track_ssoc4d_year'), index=False)
