@@ -331,3 +331,12 @@ ssoc_group={
     '8': 'Plant and Machine Operators and Assemblers',
     '9':'Cleaners, Labourers and Related Workers',
 }
+
+track_mapping = {
+    'professional services': 'strategy',
+    'data': 'data',
+    'security': 'cybersecurity',
+    'software and applications': 'software',
+    'infrastructure': 'infrastructure',
+    'support': 'support'
+}
