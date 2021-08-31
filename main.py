@@ -46,6 +46,32 @@ mcf_jobpostings_digtracks = filepaths['mcf_jobpostings_digital_tracks']['folder'
 
 cosine = filepaths['cosine_matrix']['folder'] + filepaths['cosine_matrix']['filename']
 
+analysis_largest_ssoc = filepaths['analyse_largest_demand_increase_ssoc']['folder'] + \
+                        filepaths['analyse_largest_demand_increase_ssoc']['filename']
+analysis_postings_per_track = filepaths['analyse_ssoc_tracks']['folder'] + filepaths['analyse_ssoc_tracks']['filename']
+analysis_postings_per_subtrack = filepaths['analyse_ssoc_subtracks']['folder'] + filepaths['analyse_ssoc_subtracks'][
+    'filename']
+analysis_tracks_rankdelta = filepaths['analyse_tracks_rank_delta']['folder'] + filepaths['analyse_tracks_rank_delta'][
+    'filename']
+analysis_subtracks_rankdelta = filepaths['analyse_subtracks_rank_delta']['folder'] + \
+                               filepaths['analyse_subtracks_rank_delta']['filename']
+analysis_tracks_per_posting = filepaths['analyse_tracks_diversity']['folder'] + filepaths['analyse_tracks_diversity'][
+    'filename']
+analysis_subtracks_per_posting = filepaths['analyse_subtracks_diversity']['folder'] + \
+                                 filepaths['analyse_subtracks_diversity']['filename']
+analysis_tracks_per_posting_delta = filepaths['analyse_tracks_diversity_delta']['folder'] + \
+                                    filepaths['analyse_tracks_diversity_delta']['filename']
+analysis_subtracks_per_posting_delta = filepaths['analyse_subtracks_diversity_delta']['folder'] + \
+                                       filepaths['analyse_subtracks_diversity_delta']['filename']
+analysis_skills_per_track = filepaths['analyse_tracks_proficiency']['folder'] + filepaths['analyse_tracks_proficiency'][
+    'filename']
+analysis_skills_per_subtrack = filepaths['analyse_subtracks_proficiency']['folder'] + \
+                               filepaths['analyse_subtracks_proficiency']['filename']
+analysis_skills_per_track_delta = filepaths['analyse_tracks_proficiency_delta']['folder'] + \
+                                  filepaths['analyse_tracks_proficiency_delta']['filename']
+analysis_skills_per_subtrack_delta = filepaths['analyse_subtracks_proficiency_delta']['folder'] + \
+                                     filepaths['analyse_subtracks_proficiency_delta']['filename']
+
 # Get folders
 mcf_jobpostings_folder = filepaths['mcf_jobpostings_original']['folder']
 mcf_jobpostings_ssoc_folder = filepaths['mcf_jobpostings_ssoc']['folder']
@@ -102,5 +128,17 @@ if __name__ == '__main__':
     # explore1dskills.run()
 
     # analyse ict skills by SSOC4D
-    explore4dskills=ExploreSSOC4DSkills(img_data, img)
+    explore4dskills = ExploreSSOC4DSkills(analysis_largest_ssoc,
+                                          analysis_postings_per_track,
+                                          analysis_postings_per_subtrack,
+                                          analysis_tracks_rankdelta,
+                                          analysis_subtracks_rankdelta,
+                                          analysis_tracks_per_posting,
+                                          analysis_subtracks_per_posting,
+                                          analysis_tracks_per_posting_delta,
+                                          analysis_subtracks_per_posting_delta,
+                                          analysis_skills_per_track,
+                                          analysis_skills_per_subtrack,
+                                          analysis_skills_per_track_delta,
+                                          analysis_skills_per_subtrack_delta)
     explore4dskills.run()

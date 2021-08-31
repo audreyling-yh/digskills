@@ -1,4 +1,56 @@
 filepaths={
+    'analyse_largest_demand_increase_ssoc':{
+        'folder':'data/analysis/',
+        'filename': 'count_digskills_job_2021_2018_diff_by_ssoc4d.csv'
+    },
+    'analyse_ssoc_tracks':{
+        'folder':'data/analysis/',
+        'filename': 'count_postings_by_tracks_year_top_ssoc.csv'
+    },
+    'analyse_ssoc_subtracks': {
+        'folder': 'data/analysis/',
+        'filename': 'count_postings_by_subtracks_year_top_ssoc.csv'
+    },
+    'analyse_tracks_rank_delta':{
+        'folder':'data/analysis/',
+        'filename': 'tracks_rank_delta.csv'
+    },
+    'analyse_subtracks_rank_delta':{
+        'folder':'data/analysis/',
+        'filename': 'subtracks_rank_delta.csv'
+    },
+    'analyse_tracks_diversity': {
+        'folder': 'data/analysis/',
+        'filename': 'avg_tracks_per_posting.csv'
+    },
+    'analyse_subtracks_diversity': {
+        'folder': 'data/analysis/',
+        'filename': 'avg_subtracks_per_posting.csv'
+    },
+    'analyse_tracks_diversity_delta': {
+        'folder': 'data/analysis/',
+        'filename': 'avg_tracks_per_posting_delta.csv'
+    },
+    'analyse_subtracks_diversity_delta': {
+        'folder': 'data/analysis/',
+        'filename': 'avg_subtracks_per_posting_delta.csv'
+    },
+    'analyse_tracks_proficiency': {
+        'folder': 'data/analysis/',
+        'filename': 'avg_skills_per_track.csv'
+    },
+    'analyse_subtracks_proficiency': {
+        'folder': 'data/analysis/',
+        'filename': 'avg_skills_per_subtrack.csv'
+    },
+    'analyse_tracks_proficiency_delta': {
+        'folder': 'data/analysis/',
+        'filename': 'avg_skills_per_track_delta.csv'
+    },
+    'analyse_subtracks_proficiency_delta': {
+        'folder': 'data/analysis/',
+        'filename': 'avg_skills_per_subtrack_delta.csv'
+    },
     'cosine_matrix':{
         'folder':'data/cosine/',
         'filename':'{}_cosine.csv'
