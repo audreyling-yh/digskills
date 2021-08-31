@@ -6,6 +6,7 @@ from src.ExploreSSOC1DRoles import ExploreSSOC1DRoles
 from src.ExploreSSOC1DSkills import ExploreSSOC1DSkills
 from src.ExploreSSOC4DSkills import ExploreSSOC4DSkills
 from src.ExploreSubtrackTsc import ExploreSubtrackTsc
+from src.ExploreRolesAndSkills import ExploreRolesAndSkills
 from src.GetIctSkills import GetIctSkills
 from src.MapIctJobsToSsoc import MapIctJobsToSsoc
 from src.MapMCFJobsToSsoc import MapMCFJobsToSsoc
@@ -72,6 +73,35 @@ analysis_skills_per_track_delta = filepaths['analyse_tracks_proficiency_delta'][
 analysis_skills_per_subtrack_delta = filepaths['analyse_subtracks_proficiency_delta']['folder'] + \
                                      filepaths['analyse_subtracks_proficiency_delta']['filename']
 
+analysis_largest_ssoc_ict = filepaths['analyse_largest_demand_increase_ictjob']['folder'] + \
+                            filepaths['analyse_largest_demand_increase_ictjob']['filename']
+analysis_largest_ssoc_nonict = filepaths['analyse_largest_demand_increase_nonictjob']['folder'] + \
+                               filepaths['analyse_largest_demand_increase_nonictjob']['filename']
+analysis_tracks_ict_rankdelta = filepaths['analyse_tracks_rank_delta_ict']['folder'] + filepaths['analyse_tracks_rank_delta_ict'][
+    'filename']
+analysis_subtracks_ict_rankdelta = filepaths['analyse_subtracks_rank_delta_ict']['folder'] + \
+                               filepaths['analyse_subtracks_rank_delta_ict']['filename']
+analysis_tracks_nonict_rankdelta = filepaths['analyse_tracks_rank_delta_nonict']['folder'] + filepaths['analyse_tracks_rank_delta_nonict'][
+    'filename']
+analysis_subtracks_nonict_rankdelta = filepaths['analyse_subtracks_rank_delta_nonict']['folder'] + \
+                               filepaths['analyse_subtracks_rank_delta_nonict']['filename']
+analysis_tracks_ict_per_posting_delta = filepaths['analyse_tracks_diversity_delta_ict']['folder'] + \
+                                    filepaths['analyse_tracks_diversity_delta_ict']['filename']
+analysis_subtracks_ict_per_posting_delta = filepaths['analyse_subtracks_diversity_delta_ict']['folder'] + \
+                                       filepaths['analyse_subtracks_diversity_delta_ict']['filename']
+analysis_tracks_nonict_per_posting_delta = filepaths['analyse_tracks_diversity_delta_nonict']['folder'] + \
+                                    filepaths['analyse_tracks_diversity_delta_nonict']['filename']
+analysis_subtracks_nonict_per_posting_delta = filepaths['analyse_subtracks_diversity_delta_nonict']['folder'] + \
+                                       filepaths['analyse_subtracks_diversity_delta_nonict']['filename']
+analysis_skills_per_track_ict_delta = filepaths['analyse_tracks_ict_proficiency_delta']['folder'] + \
+                                  filepaths['analyse_tracks_ict_proficiency_delta']['filename']
+analysis_skills_per_subtrack_ict_delta = filepaths['analyse_subtracks_ict_proficiency_delta']['folder'] + \
+                                     filepaths['analyse_subtracks_ict_proficiency_delta']['filename']
+analysis_skills_per_track_nonict_delta = filepaths['analyse_tracks_nonict_proficiency_delta']['folder'] + \
+                                  filepaths['analyse_tracks_nonict_proficiency_delta']['filename']
+analysis_skills_per_subtrack_nonict_delta = filepaths['analyse_subtracks_nonict_proficiency_delta']['folder'] + \
+                                     filepaths['analyse_subtracks_nonict_proficiency_delta']['filename']
+
 # Get folders
 mcf_jobpostings_folder = filepaths['mcf_jobpostings_original']['folder']
 mcf_jobpostings_ssoc_folder = filepaths['mcf_jobpostings_ssoc']['folder']
@@ -127,18 +157,36 @@ if __name__ == '__main__':
     # explore1dskills = ExploreSSOC1DSkills(img_data)
     # explore1dskills.run()
 
-    # analyse ict skills by SSOC4D
-    explore4dskills = ExploreSSOC4DSkills(analysis_largest_ssoc,
-                                          analysis_postings_per_track,
-                                          analysis_postings_per_subtrack,
-                                          analysis_tracks_rankdelta,
-                                          analysis_subtracks_rankdelta,
-                                          analysis_tracks_per_posting,
-                                          analysis_subtracks_per_posting,
-                                          analysis_tracks_per_posting_delta,
-                                          analysis_subtracks_per_posting_delta,
-                                          analysis_skills_per_track,
-                                          analysis_skills_per_subtrack,
-                                          analysis_skills_per_track_delta,
-                                          analysis_skills_per_subtrack_delta)
-    explore4dskills.run()
+    # # analyse ict skills by SSOC4D
+    # explore4dskills = ExploreSSOC4DSkills(analysis_largest_ssoc,
+    #                                       analysis_postings_per_track,
+    #                                       analysis_postings_per_subtrack,
+    #                                       analysis_tracks_rankdelta,
+    #                                       analysis_subtracks_rankdelta,
+    #                                       analysis_tracks_per_posting,
+    #                                       analysis_subtracks_per_posting,
+    #                                       analysis_tracks_per_posting_delta,
+    #                                       analysis_subtracks_per_posting_delta,
+    #                                       analysis_skills_per_track,
+    #                                       analysis_skills_per_subtrack,
+    #                                       analysis_skills_per_track_delta,
+    #                                       analysis_skills_per_subtrack_delta)
+    # explore4dskills.run()
+
+    ## analyse ict jobs X skills
+    explorerolesskills = ExploreRolesAndSkills(ict_jobs_with_ssoc,
+                                               analysis_largest_ssoc_ict,
+                                               analysis_largest_ssoc_nonict,
+                                               analysis_tracks_ict_rankdelta,
+                                               analysis_subtracks_ict_rankdelta,
+                                               analysis_tracks_nonict_rankdelta,
+                                               analysis_subtracks_nonict_rankdelta,
+                                               analysis_tracks_ict_per_posting_delta,
+                                               analysis_subtracks_ict_per_posting_delta,
+                                               analysis_tracks_nonict_per_posting_delta,
+                                               analysis_subtracks_nonict_per_posting_delta,
+                                               analysis_skills_per_track_ict_delta,
+                                               analysis_skills_per_subtrack_ict_delta,
+                                               analysis_skills_per_track_nonict_delta,
+                                               analysis_skills_per_subtrack_nonict_delta)
+    explorerolesskills.run()

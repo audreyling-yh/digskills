@@ -19,6 +19,22 @@ filepaths={
         'folder':'data/analysis/',
         'filename': 'subtracks_rank_delta.csv'
     },
+    'analyse_tracks_rank_delta_ict':{
+        'folder':'data/analysis/',
+        'filename': 'tracks_ict_rank_delta.csv'
+    },
+    'analyse_subtracks_rank_delta_ict':{
+        'folder':'data/analysis/',
+        'filename': 'subtracks_ict_rank_delta.csv'
+    },
+    'analyse_tracks_rank_delta_nonict': {
+        'folder': 'data/analysis/',
+        'filename': 'tracks_nonict_rank_delta.csv'
+    },
+    'analyse_subtracks_rank_delta_nonict': {
+        'folder': 'data/analysis/',
+        'filename': 'subtracks_nonict_rank_delta.csv'
+    },
     'analyse_tracks_diversity': {
         'folder': 'data/analysis/',
         'filename': 'avg_tracks_per_posting.csv'
@@ -35,6 +51,22 @@ filepaths={
         'folder': 'data/analysis/',
         'filename': 'avg_subtracks_per_posting_delta.csv'
     },
+    'analyse_tracks_diversity_delta_ict': { #TODO: HEre
+        'folder': 'data/analysis/',
+        'filename': 'avg_tracks_ict_per_posting_delta.csv'
+    },
+    'analyse_subtracks_diversity_delta_ict': {
+        'folder': 'data/analysis/',
+        'filename': 'avg_subtracks_ict_per_posting_delta.csv'
+    },
+    'analyse_tracks_diversity_delta_nonict': {
+        'folder': 'data/analysis/',
+        'filename': 'avg_tracks_nonict_per_posting_delta.csv'
+    },
+    'analyse_subtracks_diversity_delta_nonict': {
+        'folder': 'data/analysis/',
+        'filename': 'avg_subtracks_nonict_per_posting_delta.csv'
+    },
     'analyse_tracks_proficiency': {
         'folder': 'data/analysis/',
         'filename': 'avg_skills_per_track.csv'
@@ -50,6 +82,29 @@ filepaths={
     'analyse_subtracks_proficiency_delta': {
         'folder': 'data/analysis/',
         'filename': 'avg_skills_per_subtrack_delta.csv'
+    },
+    'analyse_tracks_ict_proficiency_delta': {
+        'folder': 'data/analysis/',
+        'filename': 'avg_skills_per_track_ict_delta.csv'
+    },
+    'analyse_subtracks_ict_proficiency_delta': {
+        'folder': 'data/analysis/',
+        'filename': 'avg_skills_per_subtrack_ict_delta.csv'
+    },'analyse_tracks_nonict_proficiency_delta': {
+        'folder': 'data/analysis/',
+        'filename': 'avg_skills_per_track_nonict_delta.csv'
+    },
+    'analyse_subtracks_nonict_proficiency_delta': {
+        'folder': 'data/analysis/',
+        'filename': 'avg_skills_per_subtrack_nonict_delta.csv'
+    },
+    'analyse_largest_demand_increase_ictjob':{
+        'folder':'data/analysis/',
+        'filename':'count_digskills_job_2021_2018_diff_ictjobs.csv'
+    },
+    'analyse_largest_demand_increase_nonictjob': {
+        'folder': 'data/analysis/',
+        'filename': 'count_digskills_job_2021_2018_diff_nonictjobs.csv'
     },
     'cosine_matrix':{
         'folder':'data/cosine/',
