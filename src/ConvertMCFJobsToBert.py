@@ -33,6 +33,7 @@ class ConvertMCFJobsToBert:
 
             # read file
             df = pd.read_csv(filepath)
+            df.drop_duplicates(inplace=True)
 
             # get job posting descriptions
             jobdesc = df['JOB_POST_DESC'].tolist()

@@ -130,18 +130,18 @@ if __name__ == '__main__':
     # tsctoict = GetIctSkills(ssg_with_bert, ict_jobs_with_dau_ssoc, digital_skills)
     # tsctoict.run()
 
-    # tag each job posting with ssoc4d/1d 2020 and AES sector of the hiring org, and remove non-PMET jobs
-    jobtossoc = MapMCFJobsToSsoc(mcf_jobpostings_folder, mcf_jobpostings_ssoc,original_ssoc2015_to_2020)
-    jobtossoc.run()
-
-    # # combine all job description text files into a dataframe and obtain Bert embeddings for each job
-    # # CAUTION: Will take about 2 days to run
-    # jobtobert = ConvertMCFJobsToBert(mcf_jobpostings_ssoc_folder, mcf_jobpostings_bert)
-    # jobtobert.run()
+    # # tag each job posting with ssoc4d/1d 2020 and AES sector of the hiring org, and remove non-PMET jobs
+    # jobtossoc = MapMCFJobsToSsoc(mcf_jobpostings_folder, mcf_jobpostings_ssoc, original_ssoc2015_to_2020)
+    # jobtossoc.run()
 
     # # get plots of tsc-proficiency and subtracks distribution, drops skills that are in too many tracks
     # exploresubtracktsc = ExploreSubtrackTsc(digital_skills, digital_skills_filtered, img)
     # exploresubtracktsc.run()
+
+    # combine all job description text files into a dataframe and obtain Bert embeddings for each job
+    # CAUTION: Will take about 2 days to run  7/9/21 2:20PM -
+    jobtobert = ConvertMCFJobsToBert(mcf_jobpostings_ssoc_folder, mcf_jobpostings_bert)
+    jobtobert.run()
 
     # # Split large mcf job postings files into smaller files
     # splitjobs=SplitMCFJobs(mcf_jobpostings_bert_folder,mcf_jobpostings_bert_split)
