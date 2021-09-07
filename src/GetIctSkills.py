@@ -24,13 +24,16 @@ class GetIctSkills:
         # Exclude CEO and CTO from job roles
         ict_df = ict_df[~ict_df['track'].str.contains('/')]
 
+        # Change track of wrongly classified jobs
+        for idx, row in ict_df.iterrows():
+            if row['job_role'] in ['it audit manager', 'it auditor', 'quality analyst', 'quality engineer',
+                                   'quality manager', 'senior it auditor', 'senior quality engineer']:
+                ict_df.loc[idx,'track']='professional services'
+
         # Add sub-tracks
         ict_df['subtrack'] = [','.join(config.job_subtrack[row['track']][row['job_role']])
                               if row['job_role'] in config.job_subtrack[row['track']].keys() else ''
                               for idx, row in ict_df.iterrows()]
-
-        # Drop job roles that cannot be matched to a sub-track
-        ict_df = ict_df[ict_df['subtrack'] != '']
 
         # Get abilities list for each ICT TSC
         ict_tsc = ict_df.merge(tsc_df[[x for x in tsc_df.columns if x not in ['sector', 'tsc_category']]],

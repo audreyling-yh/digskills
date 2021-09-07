@@ -114,6 +114,10 @@ filepaths={
         'folder': 'data/ict_jobs/',
         'filename': 'ict_jobs_ssoc.csv'
     },
+    'digital_jobs_dau_ssoc': {
+        'folder': 'data/ict_jobs/',
+        'filename': 'ict_jobs_dau_ssoc.csv'
+    },
     'digital_skills':{
         'folder': 'data/ict_skills/',
         'filename': 'ict_tsc.csv'
@@ -169,13 +173,11 @@ filepaths={
         'folder': 'data/ssoc/',
         'filename': 'SSOC2020 Alphabetical Index.xlsx'
     },
-
+    'ssoc_index_dau': {
+        'folder': 'data/ssoc/',
+        'filename': '[Long][20210830]SF-SSOCMapping.csv'
+    },
 }
-
-
-
-
-
 
 
 job_subtrack={
@@ -295,13 +297,17 @@ job_subtrack={
         'program director':['program and project management'],
         'program manager':['program and project management'],
         'project manager':['program and project management'],
+        'quality analyst':['quality management'],
         'quality assurance engineer':['quality management'],
         'quality assurance manager':['quality management'],
         'quality engineer':['quality management'],
         'quality engineering manager':['quality management'],
+        'quality manager': ['quality management'],
         'scrum master': ['program and project management'],
         'senior business analyst':['enterprise architecture'],
+        'senior it auditor': ['it audit'],
         'senior it consultant':['program and project management'],
+        'senior quality engineer': ['quality management'],
         'senior product manager': ['product strategy'],
         'solutions architect': ['enterprise architecture'],
         'solutions integration architect':['enterprise architecture'],
@@ -378,7 +384,7 @@ job_subtrack={
                                               'vulnerability assessment and penetration testing','security operations',
                                               'forensics investigation','incident response','threat analysis',
                                               'security design and engineering'],
-        'associate security analyst / associate security engineer':['governance risk and control',
+        'associate security analyst/associate security engineer':['governance risk and control',
                                               'vulnerability assessment and penetration testing','security operations',
                                               'forensics investigation','incident response','threat analysis',
                                               'security design and engineering'],
@@ -392,11 +398,11 @@ job_subtrack={
         'forensic investigation manager': ['forensics investigation'],
         'incident investigator':['incident response'],
         'incident investigation manager': ['incident response'],
-        'incident investigation manager / forensic investigation manager / threat investigation manager':[
+        'incident investigation manager/forensic investigation manager/threat investigation manager':[
             'incident response','forensics investigation','threat analysis'],
-        'incident investigator / forensic investigator / threat investigator':['incident response',
+        'incident investigator/forensic investigator/threat investigator':['incident response',
                                                                                'forensics investigation','threat analysis'],
-        'principal security engineer / principal security architect':['security design and engineering'],
+        'principal security engineer/principal security architect':['security design and engineering'],
         'security architect':['security design and engineering'],
         'security engineer':['security design and engineering'],
         'security executive':['security design and engineering'],

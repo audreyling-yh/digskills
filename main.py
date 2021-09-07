@@ -25,6 +25,8 @@ original_ssg = filepaths['ssg_skills_original']['folder'] + filepaths['ssg_skill
 original_role_to_tsc = filepaths['role_to_tsc']['folder'] + filepaths['role_to_tsc']['filename']
 original_ssoc_index = filepaths['ssoc_index_original']['folder'] + filepaths['ssoc_index_original']['filename']
 
+dau_ssoc_index=filepaths['ssoc_index_dau']['folder']+filepaths['ssoc_index_dau']['filename']
+
 img = filepaths['img']['folder'] + filepaths['img']['filename']
 img_data = filepaths['img_data']['folder'] + filepaths['img_data']['filename']
 
@@ -35,6 +37,7 @@ digital_skills_filtered = filepaths['digital_skills_filtered']['folder'] + filep
     'filename']
 
 ict_jobs_with_ssoc = filepaths['digital_jobs_ssoc']['folder'] + filepaths['digital_jobs_ssoc']['filename']
+ict_jobs_with_dau_ssoc = filepaths['digital_jobs_dau_ssoc']['folder'] + filepaths['digital_jobs_dau_ssoc']['filename']
 
 mcf_jobpostings_ssoc = filepaths['mcf_jobpostings_ssoc']['folder'] + filepaths['mcf_jobpostings_ssoc']['filename']
 mcf_jobpostings_bert = filepaths['mcf_jobpostings_bert']['folder'] + filepaths['mcf_jobpostings_bert']['filename']
@@ -115,13 +118,13 @@ if __name__ == '__main__':
     # tsctobert = ConvertSSGTscToBert(original_ssg, ssg_with_bert)
     # tsctobert.run()
 
-    # # tag each ICT skills framework job with an ssoc4d
-    # icttossoc = MapIctJobsToSsoc(original_role_to_tsc, original_ssoc_index, ict_jobs_with_ssoc)
+    # # tag each ICT skills framework job with an ssoc4d 2020 (dau mapping)
+    # icttossoc = MapIctJobsToSsoc(original_role_to_tsc, original_ssoc_index, dau_ssoc_index, ict_jobs_with_dau_ssoc)
     # icttossoc.run()
 
-    # # filter tsc-prof bert embeddings to include only ict/digital ones
-    # tsctoict = GetIctSkills(ssg_with_bert, ict_jobs_with_ssoc, digital_skills)
-    # tsctoict.run()
+    # filter tsc-prof bert embeddings to include only ict/digital ones
+    tsctoict = GetIctSkills(ssg_with_bert, ict_jobs_with_dau_ssoc, digital_skills)
+    tsctoict.run()
 
     # # tag each job posting with its associated ssoc1d, ssoc4d and ssic of the hiring org, and remove non-PMET jobs
     # jobtossoc = MapMCFJobsToSsoc(mcf_jobpostings_folder,mcf_jobpostings_ssoc)
@@ -173,20 +176,20 @@ if __name__ == '__main__':
     #                                       analysis_skills_per_subtrack_delta)
     # explore4dskills.run()
 
-    ## analyse ict jobs X skills
-    explorerolesskills = ExploreRolesAndSkills(ict_jobs_with_ssoc,
-                                               analysis_largest_ssoc_ict,
-                                               analysis_largest_ssoc_nonict,
-                                               analysis_tracks_ict_rankdelta,
-                                               analysis_subtracks_ict_rankdelta,
-                                               analysis_tracks_nonict_rankdelta,
-                                               analysis_subtracks_nonict_rankdelta,
-                                               analysis_tracks_ict_per_posting_delta,
-                                               analysis_subtracks_ict_per_posting_delta,
-                                               analysis_tracks_nonict_per_posting_delta,
-                                               analysis_subtracks_nonict_per_posting_delta,
-                                               analysis_skills_per_track_ict_delta,
-                                               analysis_skills_per_subtrack_ict_delta,
-                                               analysis_skills_per_track_nonict_delta,
-                                               analysis_skills_per_subtrack_nonict_delta)
-    explorerolesskills.run()
+    # ## analyse ict jobs X skills
+    # explorerolesskills = ExploreRolesAndSkills(ict_jobs_with_ssoc,
+    #                                            analysis_largest_ssoc_ict,
+    #                                            analysis_largest_ssoc_nonict,
+    #                                            analysis_tracks_ict_rankdelta,
+    #                                            analysis_subtracks_ict_rankdelta,
+    #                                            analysis_tracks_nonict_rankdelta,
+    #                                            analysis_subtracks_nonict_rankdelta,
+    #                                            analysis_tracks_ict_per_posting_delta,
+    #                                            analysis_subtracks_ict_per_posting_delta,
+    #                                            analysis_tracks_nonict_per_posting_delta,
+    #                                            analysis_subtracks_nonict_per_posting_delta,
+    #                                            analysis_skills_per_track_ict_delta,
+    #                                            analysis_skills_per_subtrack_ict_delta,
+    #                                            analysis_skills_per_track_nonict_delta,
+    #                                            analysis_skills_per_subtrack_nonict_delta)
+    # explorerolesskills.run()
