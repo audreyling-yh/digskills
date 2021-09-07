@@ -24,8 +24,10 @@ for i in folders:
 original_ssg = filepaths['ssg_skills_original']['folder'] + filepaths['ssg_skills_original']['filename']
 original_role_to_tsc = filepaths['role_to_tsc']['folder'] + filepaths['role_to_tsc']['filename']
 original_ssoc_index = filepaths['ssoc_index_original']['folder'] + filepaths['ssoc_index_original']['filename']
+original_ssoc2015_to_2020 = filepaths['ssoc2015_to_2020_original']['folder'] + filepaths['ssoc2015_to_2020_original'][
+    'filename']
 
-dau_ssoc_index=filepaths['ssoc_index_dau']['folder']+filepaths['ssoc_index_dau']['filename']
+dau_ssoc_index = filepaths['ssoc_index_dau']['folder'] + filepaths['ssoc_index_dau']['filename']
 
 img = filepaths['img']['folder'] + filepaths['img']['filename']
 img_data = filepaths['img_data']['folder'] + filepaths['img_data']['filename']
@@ -80,30 +82,32 @@ analysis_largest_ssoc_ict = filepaths['analyse_largest_demand_increase_ictjob'][
                             filepaths['analyse_largest_demand_increase_ictjob']['filename']
 analysis_largest_ssoc_nonict = filepaths['analyse_largest_demand_increase_nonictjob']['folder'] + \
                                filepaths['analyse_largest_demand_increase_nonictjob']['filename']
-analysis_tracks_ict_rankdelta = filepaths['analyse_tracks_rank_delta_ict']['folder'] + filepaths['analyse_tracks_rank_delta_ict'][
-    'filename']
+analysis_tracks_ict_rankdelta = filepaths['analyse_tracks_rank_delta_ict']['folder'] + \
+                                filepaths['analyse_tracks_rank_delta_ict'][
+                                    'filename']
 analysis_subtracks_ict_rankdelta = filepaths['analyse_subtracks_rank_delta_ict']['folder'] + \
-                               filepaths['analyse_subtracks_rank_delta_ict']['filename']
-analysis_tracks_nonict_rankdelta = filepaths['analyse_tracks_rank_delta_nonict']['folder'] + filepaths['analyse_tracks_rank_delta_nonict'][
-    'filename']
+                                   filepaths['analyse_subtracks_rank_delta_ict']['filename']
+analysis_tracks_nonict_rankdelta = filepaths['analyse_tracks_rank_delta_nonict']['folder'] + \
+                                   filepaths['analyse_tracks_rank_delta_nonict'][
+                                       'filename']
 analysis_subtracks_nonict_rankdelta = filepaths['analyse_subtracks_rank_delta_nonict']['folder'] + \
-                               filepaths['analyse_subtracks_rank_delta_nonict']['filename']
+                                      filepaths['analyse_subtracks_rank_delta_nonict']['filename']
 analysis_tracks_ict_per_posting_delta = filepaths['analyse_tracks_diversity_delta_ict']['folder'] + \
-                                    filepaths['analyse_tracks_diversity_delta_ict']['filename']
+                                        filepaths['analyse_tracks_diversity_delta_ict']['filename']
 analysis_subtracks_ict_per_posting_delta = filepaths['analyse_subtracks_diversity_delta_ict']['folder'] + \
-                                       filepaths['analyse_subtracks_diversity_delta_ict']['filename']
+                                           filepaths['analyse_subtracks_diversity_delta_ict']['filename']
 analysis_tracks_nonict_per_posting_delta = filepaths['analyse_tracks_diversity_delta_nonict']['folder'] + \
-                                    filepaths['analyse_tracks_diversity_delta_nonict']['filename']
+                                           filepaths['analyse_tracks_diversity_delta_nonict']['filename']
 analysis_subtracks_nonict_per_posting_delta = filepaths['analyse_subtracks_diversity_delta_nonict']['folder'] + \
-                                       filepaths['analyse_subtracks_diversity_delta_nonict']['filename']
+                                              filepaths['analyse_subtracks_diversity_delta_nonict']['filename']
 analysis_skills_per_track_ict_delta = filepaths['analyse_tracks_ict_proficiency_delta']['folder'] + \
-                                  filepaths['analyse_tracks_ict_proficiency_delta']['filename']
+                                      filepaths['analyse_tracks_ict_proficiency_delta']['filename']
 analysis_skills_per_subtrack_ict_delta = filepaths['analyse_subtracks_ict_proficiency_delta']['folder'] + \
-                                     filepaths['analyse_subtracks_ict_proficiency_delta']['filename']
+                                         filepaths['analyse_subtracks_ict_proficiency_delta']['filename']
 analysis_skills_per_track_nonict_delta = filepaths['analyse_tracks_nonict_proficiency_delta']['folder'] + \
-                                  filepaths['analyse_tracks_nonict_proficiency_delta']['filename']
+                                         filepaths['analyse_tracks_nonict_proficiency_delta']['filename']
 analysis_skills_per_subtrack_nonict_delta = filepaths['analyse_subtracks_nonict_proficiency_delta']['folder'] + \
-                                     filepaths['analyse_subtracks_nonict_proficiency_delta']['filename']
+                                            filepaths['analyse_subtracks_nonict_proficiency_delta']['filename']
 
 # Get folders
 mcf_jobpostings_folder = filepaths['mcf_jobpostings_original']['folder']
@@ -122,13 +126,13 @@ if __name__ == '__main__':
     # icttossoc = MapIctJobsToSsoc(original_role_to_tsc, original_ssoc_index, dau_ssoc_index, ict_jobs_with_dau_ssoc)
     # icttossoc.run()
 
-    # filter tsc-prof bert embeddings to include only ict/digital ones
-    tsctoict = GetIctSkills(ssg_with_bert, ict_jobs_with_dau_ssoc, digital_skills)
-    tsctoict.run()
+    # # filter tsc-prof bert embeddings to include only ict/digital ones
+    # tsctoict = GetIctSkills(ssg_with_bert, ict_jobs_with_dau_ssoc, digital_skills)
+    # tsctoict.run()
 
-    # # tag each job posting with its associated ssoc1d, ssoc4d and ssic of the hiring org, and remove non-PMET jobs
-    # jobtossoc = MapMCFJobsToSsoc(mcf_jobpostings_folder,mcf_jobpostings_ssoc)
-    # jobtossoc.run()
+    # tag each job posting with ssoc4d/1d 2020 and AES sector of the hiring org, and remove non-PMET jobs
+    jobtossoc = MapMCFJobsToSsoc(mcf_jobpostings_folder, mcf_jobpostings_ssoc,original_ssoc2015_to_2020)
+    jobtossoc.run()
 
     # # combine all job description text files into a dataframe and obtain Bert embeddings for each job
     # # CAUTION: Will take about 2 days to run

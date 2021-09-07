@@ -51,7 +51,7 @@ filepaths={
         'folder': 'data/analysis/',
         'filename': 'avg_subtracks_per_posting_delta.csv'
     },
-    'analyse_tracks_diversity_delta_ict': { #TODO: HEre
+    'analyse_tracks_diversity_delta_ict': {
         'folder': 'data/analysis/',
         'filename': 'avg_tracks_ict_per_posting_delta.csv'
     },
@@ -173,12 +173,30 @@ filepaths={
         'folder': 'data/ssoc/',
         'filename': 'SSOC2020 Alphabetical Index.xlsx'
     },
+    'ssoc2015_to_2020_original': {
+        'folder': 'data/ssoc/',
+        'filename': 'Correspondence Tables between SSOC2020 and 2015v18.xlsx'
+    },
     'ssoc_index_dau': {
         'folder': 'data/ssoc/',
         'filename': '[Long][20210830]SF-SSOCMapping.csv'
     },
 }
 
+
+# AES2019 SSIC2015 mapping based on Wenjie's file
+aes_ssic_mapping={
+    '10,32': 'Manufacturing',
+    '41,43':'Construction',
+    '35,38':'Utilities',
+    '46,47':'Wholesale & Retail Trade',
+    '49,53':'Transportation & Storage',
+    '55,56':'Accomodation & Food Services',
+    '58,63':'Information & Communications',
+    '64,66':'Finance & Insurance',
+    '68,82':'Business Services',
+    '84,97':'Other Services Industries'
+}
 
 job_subtrack={
     'data':{
