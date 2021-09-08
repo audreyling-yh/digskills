@@ -2,6 +2,7 @@ import os
 import config
 from src.ConvertMCFJobsToBert import ConvertMCFJobsToBert
 from src.ConvertSSGTscToBert import ConvertSSGTscToBert
+from src.ExploreExtensiveMargin import ExploreExtensiveMargin
 from src.ExploreSSOC1DRoles import ExploreSSOC1DRoles
 from src.ExploreSSOC1DSkills import ExploreSSOC1DSkills
 from src.ExploreSSOC4DSkills import ExploreSSOC4DSkills
@@ -138,23 +139,28 @@ if __name__ == '__main__':
     # exploresubtracktsc = ExploreSubtrackTsc(digital_skills, digital_skills_filtered, img)
     # exploresubtracktsc.run()
 
-    # combine all job description text files into a dataframe and obtain Bert embeddings for each job
-    # CAUTION: Will take about 2 days to run  7/9/21 2:20PM -
-    jobtobert = ConvertMCFJobsToBert(mcf_jobpostings_ssoc_folder, mcf_jobpostings_bert)
-    jobtobert.run()
+    # # combine all job description text files into a dataframe and obtain Bert embeddings for each job
+    # # CAUTION: Will take about 1 day to run
+    # jobtobert = ConvertMCFJobsToBert(mcf_jobpostings_ssoc_folder, mcf_jobpostings_bert)
+    # jobtobert.run()
 
     # # Split large mcf job postings files into smaller files
     # splitjobs=SplitMCFJobs(mcf_jobpostings_bert_folder,mcf_jobpostings_bert_split)
     # splitjobs.run()
 
     # # get a list of ict skills matched to each job using cosine similarity of bert embeddings
-    # # CAUTION: Will take about 5 hours
+    # # CAUTION: Will take about 3 hours
     # jobtoskills=MatchMCFJobsToIctSkills(digital_skills_filtered,mcf_jobpostings_bert_splitfolder,cosine,mcf_jobpostings_digskills)
     # jobtoskills.run()
 
     # # get main and subtracks of each job
     # jobtotracks=MatchMCFJobsToIctTracks(digital_skills_filtered,mcf_jobpostings_digskills_folder,mcf_jobpostings_digtracks)
     # jobtotracks.run()
+
+    # TODO: Redo analysis
+    # Extensive margin
+    exploreextensive = ExploreExtensiveMargin(img)
+    exploreextensive.run()
 
     # # analyse ict roles by SSOC1D
     # explore1droles = ExploreSSOC1DRoles(ict_jobs_with_ssoc, img_data)

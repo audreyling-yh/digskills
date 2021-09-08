@@ -17,7 +17,7 @@ class MapIctJobsToSsoc:
 
         ict = self.get_ict_jobs(ict)
         df = self.map_role_to_ssoc(ict, dau_ssoc)
-        df.to_csv(self.output_filepath, index=False)
+        # df.to_csv(self.output_filepath, index=False)
 
         #### FOR MAPPING TO ORIGINAL SSOC2020 INDEX (NOT IN USE)
         # ssoc=pd.read_excel(self.ssoc_index_filepath,skiprows=6,header=1)
@@ -43,7 +43,7 @@ class MapIctJobsToSsoc:
         dau_ssoc['SSOC1D'] = dau_ssoc['SSOC4DMapping'].apply(lambda x: x[0])
 
         # All 102 job roles will be mapped
-        # Each role is mapped to 1 ssoc4d
+        # Each ICT role is mapped to 1 ssoc4d (by coincidence; the dau mapping can be one role to many SSOC)
         df = ict.merge(dau_ssoc[['role_id', 'job_role', 'SSOC4DMapping', 'SSOC1D']], on=['role_id', 'job_role'],
                        how='left')
 
