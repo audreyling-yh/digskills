@@ -51,11 +51,12 @@ class MapMCFJobsToSsoc:
             info['SSOC1D'] = info['SSOC 2020'].apply(lambda x: x[:1])
 
             # Merge job info (SSOC2020 etc.) with job details (job description etc.)
-            merged = detail.merge(info[['JOB_POST_ID', 'SSOC4D', 'SSOC1D', 'AES']], on='JOB_POST_ID', how='inner')
+            merged = detail.merge(info[['JOB_POST_ID', 'SSOC4D', 'SSOC1D', 'HIRE_ORG_SSIC_CODE', 'AES']],
+                                  on='JOB_POST_ID', how='inner')
 
             # Drop jobs that are non-PMET (Drop SSOC1D 4-9)
-            excluded = ['4', '5', '6', '7', '8', '9', 'X', 'n']
-            merged_filtered = merged[~merged['SSOC1D'].isin(excluded)]
+            pmet = ['1', '2', '3']
+            merged_filtered = merged[merged['SSOC1D'].isin(pmet)]
             print(len(merged) - len(merged_filtered), 'non-PMET jobs dropped')
 
             merged_filtered['date'] = merged_filtered['YYYYMM'].apply(lambda x: datetime.strptime(str(x), '%Y%m'))
@@ -70,10 +71,10 @@ class MapMCFJobsToSsoc:
         aes = None
 
         for k, v in aes_mapping.items():
-            range_start = k[0]
-            range_end = k[1]
+            range_start = k.split(',')[0]
+            range_end = k.split(',')[1]
 
-            if range_start <= ssic <= range_end:
+            if range_start <= ssic[:2] <= range_end:
                 aes = v
 
         return aes

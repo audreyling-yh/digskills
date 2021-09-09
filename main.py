@@ -53,62 +53,7 @@ mcf_jobpostings_digtracks = filepaths['mcf_jobpostings_digital_tracks']['folder'
 
 cosine = filepaths['cosine_matrix']['folder'] + filepaths['cosine_matrix']['filename']
 
-analysis_largest_ssoc = filepaths['analyse_largest_demand_increase_ssoc']['folder'] + \
-                        filepaths['analyse_largest_demand_increase_ssoc']['filename']
-analysis_postings_per_track = filepaths['analyse_ssoc_tracks']['folder'] + filepaths['analyse_ssoc_tracks']['filename']
-analysis_postings_per_subtrack = filepaths['analyse_ssoc_subtracks']['folder'] + filepaths['analyse_ssoc_subtracks'][
-    'filename']
-analysis_tracks_rankdelta = filepaths['analyse_tracks_rank_delta']['folder'] + filepaths['analyse_tracks_rank_delta'][
-    'filename']
-analysis_subtracks_rankdelta = filepaths['analyse_subtracks_rank_delta']['folder'] + \
-                               filepaths['analyse_subtracks_rank_delta']['filename']
-analysis_tracks_per_posting = filepaths['analyse_tracks_diversity']['folder'] + filepaths['analyse_tracks_diversity'][
-    'filename']
-analysis_subtracks_per_posting = filepaths['analyse_subtracks_diversity']['folder'] + \
-                                 filepaths['analyse_subtracks_diversity']['filename']
-analysis_tracks_per_posting_delta = filepaths['analyse_tracks_diversity_delta']['folder'] + \
-                                    filepaths['analyse_tracks_diversity_delta']['filename']
-analysis_subtracks_per_posting_delta = filepaths['analyse_subtracks_diversity_delta']['folder'] + \
-                                       filepaths['analyse_subtracks_diversity_delta']['filename']
-analysis_skills_per_track = filepaths['analyse_tracks_proficiency']['folder'] + filepaths['analyse_tracks_proficiency'][
-    'filename']
-analysis_skills_per_subtrack = filepaths['analyse_subtracks_proficiency']['folder'] + \
-                               filepaths['analyse_subtracks_proficiency']['filename']
-analysis_skills_per_track_delta = filepaths['analyse_tracks_proficiency_delta']['folder'] + \
-                                  filepaths['analyse_tracks_proficiency_delta']['filename']
-analysis_skills_per_subtrack_delta = filepaths['analyse_subtracks_proficiency_delta']['folder'] + \
-                                     filepaths['analyse_subtracks_proficiency_delta']['filename']
-
-analysis_largest_ssoc_ict = filepaths['analyse_largest_demand_increase_ictjob']['folder'] + \
-                            filepaths['analyse_largest_demand_increase_ictjob']['filename']
-analysis_largest_ssoc_nonict = filepaths['analyse_largest_demand_increase_nonictjob']['folder'] + \
-                               filepaths['analyse_largest_demand_increase_nonictjob']['filename']
-analysis_tracks_ict_rankdelta = filepaths['analyse_tracks_rank_delta_ict']['folder'] + \
-                                filepaths['analyse_tracks_rank_delta_ict'][
-                                    'filename']
-analysis_subtracks_ict_rankdelta = filepaths['analyse_subtracks_rank_delta_ict']['folder'] + \
-                                   filepaths['analyse_subtracks_rank_delta_ict']['filename']
-analysis_tracks_nonict_rankdelta = filepaths['analyse_tracks_rank_delta_nonict']['folder'] + \
-                                   filepaths['analyse_tracks_rank_delta_nonict'][
-                                       'filename']
-analysis_subtracks_nonict_rankdelta = filepaths['analyse_subtracks_rank_delta_nonict']['folder'] + \
-                                      filepaths['analyse_subtracks_rank_delta_nonict']['filename']
-analysis_tracks_ict_per_posting_delta = filepaths['analyse_tracks_diversity_delta_ict']['folder'] + \
-                                        filepaths['analyse_tracks_diversity_delta_ict']['filename']
-analysis_subtracks_ict_per_posting_delta = filepaths['analyse_subtracks_diversity_delta_ict']['folder'] + \
-                                           filepaths['analyse_subtracks_diversity_delta_ict']['filename']
-analysis_tracks_nonict_per_posting_delta = filepaths['analyse_tracks_diversity_delta_nonict']['folder'] + \
-                                           filepaths['analyse_tracks_diversity_delta_nonict']['filename']
-analysis_subtracks_nonict_per_posting_delta = filepaths['analyse_subtracks_diversity_delta_nonict']['folder'] + \
-                                              filepaths['analyse_subtracks_diversity_delta_nonict']['filename']
-analysis_skills_per_track_ict_delta = filepaths['analyse_tracks_ict_proficiency_delta']['folder'] + \
-                                      filepaths['analyse_tracks_ict_proficiency_delta']['filename']
-analysis_skills_per_subtrack_ict_delta = filepaths['analyse_subtracks_ict_proficiency_delta']['folder'] + \
-                                         filepaths['analyse_subtracks_ict_proficiency_delta']['filename']
-analysis_skills_per_track_nonict_delta = filepaths['analyse_tracks_nonict_proficiency_delta']['folder'] + \
-                                         filepaths['analyse_tracks_nonict_proficiency_delta']['filename']
-analysis_skills_per_subtrack_nonict_delta = filepaths['analyse_subtracks_nonict_proficiency_delta']['folder'] + \
-                                            filepaths['analyse_subtracks_nonict_proficiency_delta']['filename']
+analysis=filepaths['analysis']['folder']+filepaths['analysis']['filename']
 
 # Get folders
 mcf_jobpostings_folder = filepaths['mcf_jobpostings_original']['folder']
@@ -157,10 +102,10 @@ if __name__ == '__main__':
     # jobtotracks=MatchMCFJobsToIctTracks(digital_skills_filtered,mcf_jobpostings_digskills_folder,mcf_jobpostings_digtracks)
     # jobtotracks.run()
 
-    # TODO: Redo analysis
-    # Extensive margin
-    exploreextensive = ExploreExtensiveMargin(img)
-    exploreextensive.run()
+    # # TODO: Redo analysis
+    # # Extensive margin
+    # exploreextensive = ExploreExtensiveMargin(img,analysis)
+    # exploreextensive.run()
 
     # # analyse ict roles by SSOC1D
     # explore1droles = ExploreSSOC1DRoles(ict_jobs_with_ssoc, img_data)

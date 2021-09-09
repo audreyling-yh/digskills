@@ -1,110 +1,7 @@
 filepaths={
-    'analyse_largest_demand_increase_ssoc':{
+    'analysis':{
         'folder':'data/analysis/',
-        'filename': 'count_digskills_job_2021_2018_diff_by_ssoc4d.csv'
-    },
-    'analyse_ssoc_tracks':{
-        'folder':'data/analysis/',
-        'filename': 'count_postings_by_tracks_year_top_ssoc.csv'
-    },
-    'analyse_ssoc_subtracks': {
-        'folder': 'data/analysis/',
-        'filename': 'count_postings_by_subtracks_year_top_ssoc.csv'
-    },
-    'analyse_tracks_rank_delta':{
-        'folder':'data/analysis/',
-        'filename': 'tracks_rank_delta.csv'
-    },
-    'analyse_subtracks_rank_delta':{
-        'folder':'data/analysis/',
-        'filename': 'subtracks_rank_delta.csv'
-    },
-    'analyse_tracks_rank_delta_ict':{
-        'folder':'data/analysis/',
-        'filename': 'tracks_ict_rank_delta.csv'
-    },
-    'analyse_subtracks_rank_delta_ict':{
-        'folder':'data/analysis/',
-        'filename': 'subtracks_ict_rank_delta.csv'
-    },
-    'analyse_tracks_rank_delta_nonict': {
-        'folder': 'data/analysis/',
-        'filename': 'tracks_nonict_rank_delta.csv'
-    },
-    'analyse_subtracks_rank_delta_nonict': {
-        'folder': 'data/analysis/',
-        'filename': 'subtracks_nonict_rank_delta.csv'
-    },
-    'analyse_tracks_diversity': {
-        'folder': 'data/analysis/',
-        'filename': 'avg_tracks_per_posting.csv'
-    },
-    'analyse_subtracks_diversity': {
-        'folder': 'data/analysis/',
-        'filename': 'avg_subtracks_per_posting.csv'
-    },
-    'analyse_tracks_diversity_delta': {
-        'folder': 'data/analysis/',
-        'filename': 'avg_tracks_per_posting_delta.csv'
-    },
-    'analyse_subtracks_diversity_delta': {
-        'folder': 'data/analysis/',
-        'filename': 'avg_subtracks_per_posting_delta.csv'
-    },
-    'analyse_tracks_diversity_delta_ict': {
-        'folder': 'data/analysis/',
-        'filename': 'avg_tracks_ict_per_posting_delta.csv'
-    },
-    'analyse_subtracks_diversity_delta_ict': {
-        'folder': 'data/analysis/',
-        'filename': 'avg_subtracks_ict_per_posting_delta.csv'
-    },
-    'analyse_tracks_diversity_delta_nonict': {
-        'folder': 'data/analysis/',
-        'filename': 'avg_tracks_nonict_per_posting_delta.csv'
-    },
-    'analyse_subtracks_diversity_delta_nonict': {
-        'folder': 'data/analysis/',
-        'filename': 'avg_subtracks_nonict_per_posting_delta.csv'
-    },
-    'analyse_tracks_proficiency': {
-        'folder': 'data/analysis/',
-        'filename': 'avg_skills_per_track.csv'
-    },
-    'analyse_subtracks_proficiency': {
-        'folder': 'data/analysis/',
-        'filename': 'avg_skills_per_subtrack.csv'
-    },
-    'analyse_tracks_proficiency_delta': {
-        'folder': 'data/analysis/',
-        'filename': 'avg_skills_per_track_delta.csv'
-    },
-    'analyse_subtracks_proficiency_delta': {
-        'folder': 'data/analysis/',
-        'filename': 'avg_skills_per_subtrack_delta.csv'
-    },
-    'analyse_tracks_ict_proficiency_delta': {
-        'folder': 'data/analysis/',
-        'filename': 'avg_skills_per_track_ict_delta.csv'
-    },
-    'analyse_subtracks_ict_proficiency_delta': {
-        'folder': 'data/analysis/',
-        'filename': 'avg_skills_per_subtrack_ict_delta.csv'
-    },'analyse_tracks_nonict_proficiency_delta': {
-        'folder': 'data/analysis/',
-        'filename': 'avg_skills_per_track_nonict_delta.csv'
-    },
-    'analyse_subtracks_nonict_proficiency_delta': {
-        'folder': 'data/analysis/',
-        'filename': 'avg_skills_per_subtrack_nonict_delta.csv'
-    },
-    'analyse_largest_demand_increase_ictjob':{
-        'folder':'data/analysis/',
-        'filename':'count_digskills_job_2021_2018_diff_ictjobs.csv'
-    },
-    'analyse_largest_demand_increase_nonictjob': {
-        'folder': 'data/analysis/',
-        'filename': 'count_digskills_job_2021_2018_diff_nonictjobs.csv'
+        'filename':'{}.csv'
     },
     'cosine_matrix':{
         'folder':'data/cosine/',
@@ -184,11 +81,11 @@ filepaths={
 }
 
 
-# AES2019 SSIC2015 mapping based on Wenjie's file
+# AES2019 SSIC2015 (Version 2018) mapping based on Wenjie's file
 aes_ssic_mapping={
     '10,32': 'Manufacturing',
+    '35,38': 'Utilities',
     '41,43':'Construction',
-    '35,38':'Utilities',
     '46,47':'Wholesale & Retail Trade',
     '49,53':'Transportation & Storage',
     '55,56':'Accomodation & Food Services',
