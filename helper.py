@@ -126,10 +126,12 @@ def get_bert_embeddings(tokens_tensor, segments_tensors, model):
             containing embeddings for each token
 
     """
-    # For GPU (comment out if no GPU)
-    tokens_tensor = tokens_tensor.to('cuda')
-    segments_tensors = segments_tensors.to('cuda')
-    model.to('cuda')
+    # Activate GPU if any
+    device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
+
+    tokens_tensor = tokens_tensor.to(device)
+    segments_tensors = segments_tensors.to(device)
+    model = model.to(device)
 
     # Gradient calculation id disabled
     # Model is in inference mode
@@ -147,7 +149,7 @@ def get_bert_embeddings(tokens_tensor, segments_tensors, model):
     token_embeddings = hidden_states[-1]
 
     # Get sentence embedding using mean pooling
-    token_embeddings = torch.mean(token_embeddings[0], dim=0)
+    token_embeddings = torch.mean(token_embeddings[0], dim=0).to(device)
 
     # Converting torchtensors to lists
     list_token_embeddings = [token_embed.tolist() for token_embed in token_embeddings]

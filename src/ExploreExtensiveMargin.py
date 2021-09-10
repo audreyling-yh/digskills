@@ -2,8 +2,10 @@ import helper
 
 
 class ExploreExtensiveMargin:
-    def __init__(self, img_filepath):
+    def __init__(self, img_filepath,analysis_filepath):
         self.img_filepath = img_filepath
+        self.analysis_filepath=analysis_filepath
+
         self.jobs = None
 
     def run(self):
@@ -28,4 +30,5 @@ class ExploreExtensiveMargin:
 
         df = sector_job_count.merge(year_df, on=['year'], how='left')
         df['overall_job_prop'] = df['overall_job_count'] / df['yearly_overall_job_count']
-        helper.save_csv(df, 'data/analysis/jobs_by_sector.csv')
+        filepath=self.analysis_filepath.format('jobs_by_sector')
+        helper.save_csv(df, filepath)

@@ -1,6 +1,7 @@
 import pandas as pd
 import ast
 import helper
+import torch
 from transformers import BertTokenizer, BertModel
 
 """
@@ -38,12 +39,21 @@ class ConvertSSGTscToBert:
         return abilities_str
 
     def tsc_to_bert(self, abilities_str):
+        # Activate GPU if any
+        device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
+
         embeddings_list = []
         for index, text in enumerate(abilities_str):
-            tokenized_text, tokens_tensor, segments_tensors = helper.bert_text_preparation(text, self.tokenizer)
-            tsc_embeddings = helper.get_bert_embeddings(tokens_tensor, segments_tensors, self.model)
 
-            print('TSC {} done - {} x 1 vector embedding'.format(index + 1, len(tsc_embeddings)))
+            # TODO: try out
+            inputs = self.tokenizer(text, return_tensors="pt").to(device)
+            outputs = self.model(**inputs)
+            last_hidden_states = outputs.last_hidden_state
+
+            # tokenized_text, tokens_tensor, segments_tensors = helper.bert_text_preparation(text, self.tokenizer)
+            # tsc_embeddings = helper.get_bert_embeddings(tokens_tensor, segments_tensors, self.model)
+
+            print('TSC {} done - {} x 1 vector embedding'.format(index + 1, len(last_hidden_states)))
             embeddings_list.append(tsc_embeddings)
 
         return embeddings_list
