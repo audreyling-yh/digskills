@@ -1,7 +1,8 @@
 import pandas as pd
 from transformers import BertTokenizer, BertModel
 import os
-import helper
+import torch
+from datetime import datetime
 
 """
 This class converts each MCF job posting description
@@ -18,8 +19,12 @@ class ConvertMCFJobsToBert:
         self.model = None
 
     def run(self):
+        startTime = datetime.now()
+
         self.init_bert()
         self.desc_to_bert()
+
+        print(datetime.now() - startTime)
 
     def init_bert(self):
         self.tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
@@ -33,20 +38,31 @@ class ConvertMCFJobsToBert:
 
             # read file
             df = pd.read_csv(filepath)
+
+            # clean file
             df.drop_duplicates(inplace=True)
+            df.dropna(subset=['JOB_POST_DESC'],inplace=True)
 
             # get job posting descriptions
             jobdesc = df['JOB_POST_DESC'].tolist()
             totaljobs = len(jobdesc)
 
-            # get bert embeddings for each job posting description
+            # Activate GPU if any
+            device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
+            self.model = self.model.to(device)
+
             embeddings_list = []
             for index, text in enumerate(jobdesc):
-                tokenized_text, tokens_tensor, segments_tensors = helper.bert_text_preparation(text, self.tokenizer)
-                job_embeddings = helper.get_bert_embeddings(tokens_tensor, segments_tensors, self.model)
+                inputs = self.tokenizer(text, return_tensors="pt", truncation=True).to(device)
+                outputs = self.model(**inputs)
+                last_hidden_states = outputs.last_hidden_state
+
+                # get avg embedding across tokens
+                embeddings = torch.mean(last_hidden_states[0], dim=0).to(device)
+                job_embeddings = [e.tolist() for e in embeddings]
 
                 print('Job {} out of {} done for {} - {} x 1 vector embedding'.format(index + 1, totaljobs, i,
-                                                                                             len(job_embeddings)))
+                                                                                      len(job_embeddings)))
                 embeddings_list.append(job_embeddings)
 
             df['bert_embeddings'] = embeddings_list
