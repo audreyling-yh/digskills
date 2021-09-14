@@ -28,7 +28,8 @@ class ExploreExtensiveMargin:
 
         self.filter_sectors()
         ssoc_ict_job_count = self.count_ict_jobs_by_ssoc()
-        self.prop_ict_jobs_by_ssoc(year_job_count, ssoc_ict_job_count)
+        ssoc_ict_job_prop=self.prop_ict_jobs_by_ssoc(year_job_count, ssoc_ict_job_count)
+        self.get_change_in_prop(ssoc_ict_job_prop)
 
     def indicate_ict_job(self):
         # get ICT SSOC4Ds
@@ -114,3 +115,28 @@ class ExploreExtensiveMargin:
         df['job_prop'] = df['job_count'] / df['yearly_overall_job_count']
         filepath = self.analysis_filepath.format('ict_jobs_by_ssoc')
         helper.save_csv(df, filepath)
+        return df
+
+    def get_change_in_prop(self, ssc_ict_job_prop):
+        # narrow down to ICT jobs
+        ssc_ict_job_prop=ssc_ict_job_prop[ssc_ict_job_prop['ict']]
+
+        # drop SSOC4Ds that don't have values for all 4 years
+        temp=ssc_ict_job_prop.groupby(['SSOC4D'])['year'].nunique().reset_index()
+        temp=temp[temp['year']==4]
+        ssoclist=temp['SSOC4D'].tolist()
+        df=ssc_ict_job_prop[ssc_ict_job_prop['SSOC4D'].isin(ssoclist)]
+
+        # get change in proportion between 2018 and 2021
+        df=df[df['year'].isin(['2018','2021'])]
+        df.sort_values(by=['SSOC4D','year'],ascending=True,inplace=True)
+        df['prop_diff_2018_2021']=df['job_prop'].diff()
+        df = df[df['year'].isin(['2021'])]
+
+        # clean
+        df.sort_values(by=['prop_diff_2018_2021'],ascending=False,inplace=True)
+        df=df[['SSOC4D','prop_diff_2018_2021']]
+
+        filepath = self.analysis_filepath.format('ict_jobs_increase_by_ssoc')
+        helper.save_csv(df, filepath)
+

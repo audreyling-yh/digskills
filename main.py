@@ -101,7 +101,8 @@ if __name__ == '__main__':
     # jobtotracks=MatchMCFJobsToIctTracks(digital_skills_filtered,mcf_jobpostings_digskills_folder,mcf_jobpostings_digtracks)
     # jobtotracks.run()
 
-    # TODO: Redo analysis
     # Extensive margin
     exploreextensive = ExploreExtensiveMargin(img,analysis,ict_jobs_with_dau_ssoc)
     exploreextensive.run()
+
+    # TODO: Intensive margin analysis
