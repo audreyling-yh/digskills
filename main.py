@@ -3,9 +3,6 @@ import config
 from src.ConvertMCFJobsToBert import ConvertMCFJobsToBert
 from src.ConvertSSGTscToBert import ConvertSSGTscToBert
 from src.ExploreExtensiveMargin import ExploreExtensiveMargin
-from src.ExploreSSOC1DRoles import ExploreSSOC1DRoles
-from src.ExploreSSOC1DSkills import ExploreSSOC1DSkills
-from src.ExploreSSOC4DSkills import ExploreSSOC4DSkills
 from src.ExploreSubtrackTsc import ExploreSubtrackTsc
 from src.ExploreRolesAndSkills import ExploreRolesAndSkills
 from src.GetIctSkills import GetIctSkills
@@ -94,59 +91,17 @@ if __name__ == '__main__':
     # splitjobs=SplitMCFJobs(mcf_jobpostings_bert_folder,mcf_jobpostings_bert_split)
     # splitjobs.run()
 
-    # get a list of ict skills matched to each job using cosine similarity of bert embeddings
-    # CAUTION: Will take about 3 hours 
-    jobtoskills = MatchMCFJobsToIctSkills(digital_skills_filtered, mcf_jobpostings_bert_splitfolder, cosine,
-                                          mcf_jobpostings_digskills)
-    jobtoskills.run()
+    # # get a list of ict skills matched to each job using cosine similarity of bert embeddings
+    # # CAUTION: Will take about 3 hours
+    # jobtoskills = MatchMCFJobsToIctSkills(digital_skills_filtered, mcf_jobpostings_bert_splitfolder, cosine,
+    #                                       mcf_jobpostings_digskills)
+    # jobtoskills.run()
 
     # # get main and subtracks of each job
     # jobtotracks=MatchMCFJobsToIctTracks(digital_skills_filtered,mcf_jobpostings_digskills_folder,mcf_jobpostings_digtracks)
     # jobtotracks.run()
 
-    # # TODO: Redo analysis
-    # # Extensive margin
-    # exploreextensive = ExploreExtensiveMargin(img,analysis)
-    # exploreextensive.run()
-
-    # # analyse ict roles by SSOC1D
-    # explore1droles = ExploreSSOC1DRoles(ict_jobs_with_ssoc, img_data)
-    # explore1droles.run()
-
-    # # analyse ict skills by SSOC1D
-    # explore1dskills = ExploreSSOC1DSkills(img_data)
-    # explore1dskills.run()
-
-    # # analyse ict skills by SSOC4D
-    # explore4dskills = ExploreSSOC4DSkills(analysis_largest_ssoc,
-    #                                       analysis_postings_per_track,
-    #                                       analysis_postings_per_subtrack,
-    #                                       analysis_tracks_rankdelta,
-    #                                       analysis_subtracks_rankdelta,
-    #                                       analysis_tracks_per_posting,
-    #                                       analysis_subtracks_per_posting,
-    #                                       analysis_tracks_per_posting_delta,
-    #                                       analysis_subtracks_per_posting_delta,
-    #                                       analysis_skills_per_track,
-    #                                       analysis_skills_per_subtrack,
-    #                                       analysis_skills_per_track_delta,
-    #                                       analysis_skills_per_subtrack_delta)
-    # explore4dskills.run()
-
-    # ## analyse ict jobs X skills
-    # explorerolesskills = ExploreRolesAndSkills(ict_jobs_with_ssoc,
-    #                                            analysis_largest_ssoc_ict,
-    #                                            analysis_largest_ssoc_nonict,
-    #                                            analysis_tracks_ict_rankdelta,
-    #                                            analysis_subtracks_ict_rankdelta,
-    #                                            analysis_tracks_nonict_rankdelta,
-    #                                            analysis_subtracks_nonict_rankdelta,
-    #                                            analysis_tracks_ict_per_posting_delta,
-    #                                            analysis_subtracks_ict_per_posting_delta,
-    #                                            analysis_tracks_nonict_per_posting_delta,
-    #                                            analysis_subtracks_nonict_per_posting_delta,
-    #                                            analysis_skills_per_track_ict_delta,
-    #                                            analysis_skills_per_subtrack_ict_delta,
-    #                                            analysis_skills_per_track_nonict_delta,
-    #                                            analysis_skills_per_subtrack_nonict_delta)
-    # explorerolesskills.run()
+    # TODO: Redo analysis
+    # Extensive margin
+    exploreextensive = ExploreExtensiveMargin(img,analysis,ict_jobs_with_dau_ssoc)
+    exploreextensive.run()
