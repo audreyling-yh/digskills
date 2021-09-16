@@ -24,12 +24,10 @@ class ExploreExtensiveMargin:
         self.prop_ict_jobs_by_year(year_job_count, year_ict_job_count)
 
         sector_ict_job_count = self.count_ict_jobs_by_sector()
-        self.prop_ict_jobs_by_sector(year_job_count, sector_ict_job_count)
+        self.prop_ict_jobs_by_sector(sector_job_count, sector_ict_job_count)
 
-        self.filter_sectors()
-        ssoc_ict_job_count = self.count_ict_jobs_by_ssoc()
-        ssoc_ict_job_prop=self.prop_ict_jobs_by_ssoc(year_job_count, ssoc_ict_job_count)
-        self.get_change_in_prop(ssoc_ict_job_prop)
+        ssoc_ict_job_count = self.count_ict_ssoc_by_sector()
+        self.prop_ict_ssoc_by_sector(sector_ict_job_count, ssoc_ict_job_count)
 
     def indicate_ict_job(self):
         # get ICT SSOC4Ds
@@ -51,7 +49,7 @@ class ExploreExtensiveMargin:
         # count the total number of jobs in each sector each year
         df = self.jobs.groupby(['AES', 'year'])['JOB_POST_ID'].count().reset_index()
         df = helper.scale_counts(df, 'JOB_POST_ID')
-        df.rename(columns={'scaled_JOB_POST_ID': 'overall_job_count'}, inplace=True)
+        df.rename(columns={'scaled_JOB_POST_ID': 'sector_overall_job_count'}, inplace=True)
         df.drop(columns=['JOB_POST_ID'], inplace=True)
         return df
 
@@ -74,21 +72,22 @@ class ExploreExtensiveMargin:
     def prop_jobs_by_sector(self, year_job_count, sector_job_count):
         # get the proportion of all jobs in each sector each year
         df = sector_job_count.merge(year_job_count, on=['year'], how='left')
-        df['job_prop'] = df['overall_job_count'] / df['yearly_overall_job_count']
+        df['total jobs in sector/total jobs across all sectors'] = df['sector_overall_job_count'] / df[
+            'yearly_overall_job_count']
         filepath = self.analysis_filepath.format('overall_jobs_by_sector')
         helper.save_csv(df, filepath)
 
     def prop_ict_jobs_by_year(self, year_job_count, year_ict_job_count):
         # get the proportion of ICT/non-ICT jobs each year
         df = year_ict_job_count.merge(year_job_count, on=['year'], how='left')
-        df['job_prop'] = df['job_count'] / df['yearly_overall_job_count']
+        df['total ict jobs/total jobs'] = df['job_count'] / df['yearly_overall_job_count']
         filepath = self.analysis_filepath.format('ict_jobs_by_year')
         helper.save_csv(df, filepath)
 
-    def prop_ict_jobs_by_sector(self, year_job_count, sector_ict_job_count):
+    def prop_ict_jobs_by_sector(self, sector_job_count, sector_ict_job_count):
         # get the proportion of ICT/non-ICT jobs in each sector each year
-        df = sector_ict_job_count.merge(year_job_count, on=['year'], how='left')
-        df['job_prop'] = df['job_count'] / df['yearly_overall_job_count']
+        df = sector_ict_job_count.merge(sector_job_count, on=['year', 'AES'], how='left')
+        df['total ict jobs in sector/total jobs in sector'] = df['job_count'] / df['sector_overall_job_count']
         filepath = self.analysis_filepath.format('ict_jobs_by_sector')
         helper.save_csv(df, filepath)
 
@@ -101,42 +100,23 @@ class ExploreExtensiveMargin:
                    'Manufacturing']
         self.jobs = self.jobs[self.jobs['AES'].isin(sectors)]
 
-    def count_ict_jobs_by_ssoc(self):
-        # count the total number of ICT/non-ICT jobs in each SSOC4D each year
-        df = self.jobs.groupby(['year', 'SSOC4D', 'ict'])['JOB_POST_ID'].count().reset_index()
+    def count_ict_ssoc_by_sector(self):
+        # count the total number of jobs in each ICT SSOC4D in each sector each year
+        df = self.jobs[self.jobs['ict']]
+        df = df.groupby(['year', 'AES', 'SSOC4D'])['JOB_POST_ID'].count().reset_index()
         df = helper.scale_counts(df, 'JOB_POST_ID')
         df.rename(columns={'scaled_JOB_POST_ID': 'job_count'}, inplace=True)
         df.drop(columns=['JOB_POST_ID'], inplace=True)
         return df
 
-    def prop_ict_jobs_by_ssoc(self, year_job_count, ssoc_ict_job_count):
-        # get the proportion of ICT/non-ICT jobs in each SSOC4D each year
-        df = ssoc_ict_job_count.merge(year_job_count, on=['year'], how='left')
-        df['job_prop'] = df['job_count'] / df['yearly_overall_job_count']
+    def prop_ict_ssoc_by_sector(self, sector_ict_job_count, ssoc_ict_job_count):
+        sector_ict_job_count.rename(columns={'job_count': 'sector_ict_job_count'}, inplace=True)
+        sector_ict_job_count = sector_ict_job_count[sector_ict_job_count['ict']]
+        sector_ict_job_count.drop(columns=['ict'], inplace=True)
+
+        # get the proportion of jobs in each ICT SSOC4D in each sector each year
+        df = ssoc_ict_job_count.merge(sector_ict_job_count, on=['year', 'AES'], how='left')
+        df['total jobs in ssoc in sector/total ict jobs in sector'] = df['job_count'] / df['sector_ict_job_count']
         filepath = self.analysis_filepath.format('ict_jobs_by_ssoc')
         helper.save_csv(df, filepath)
         return df
-
-    def get_change_in_prop(self, ssc_ict_job_prop):
-        # narrow down to ICT jobs
-        ssc_ict_job_prop=ssc_ict_job_prop[ssc_ict_job_prop['ict']]
-
-        # drop SSOC4Ds that don't have values for all 4 years
-        temp=ssc_ict_job_prop.groupby(['SSOC4D'])['year'].nunique().reset_index()
-        temp=temp[temp['year']==4]
-        ssoclist=temp['SSOC4D'].tolist()
-        df=ssc_ict_job_prop[ssc_ict_job_prop['SSOC4D'].isin(ssoclist)]
-
-        # get change in proportion between 2018 and 2021
-        df=df[df['year'].isin(['2018','2021'])]
-        df.sort_values(by=['SSOC4D','year'],ascending=True,inplace=True)
-        df['prop_diff_2018_2021']=df['job_prop'].diff()
-        df = df[df['year'].isin(['2021'])]
-
-        # clean
-        df.sort_values(by=['prop_diff_2018_2021'],ascending=False,inplace=True)
-        df=df[['SSOC4D','prop_diff_2018_2021']]
-
-        filepath = self.analysis_filepath.format('ict_jobs_increase_by_ssoc')
-        helper.save_csv(df, filepath)
-
