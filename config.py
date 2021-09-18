@@ -352,6 +352,10 @@ jobposting_detail_info_mapping = {
     'data/jobpostings/JOB_POST_DETAILS_202102.txt': 'data/jobpostings/JOB_POST_202102.txt',
     'data/jobpostings/JOB_POST_DETAILS_202103.txt': 'data/jobpostings/JOB_POST_202103.txt',
     'data/jobpostings/JOB_POST_DETAILS_202104.txt': 'data/jobpostings/JOB_POST_202104.txt',
+    'data/jobpostings/JOB_POST_DETAILS_202105.txt': 'data/jobpostings/JOB_POST_202105.txt',
+    'data/jobpostings/JOB_POST_DETAILS_202106.txt': 'data/jobpostings/JOB_POST_202106.txt',
+    'data/jobpostings/JOB_POST_DETAILS_202107.txt': 'data/jobpostings/JOB_POST_202107.txt',
+
 }
 
 ssoc_group = {

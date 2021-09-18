@@ -40,33 +40,25 @@ class ExploreExtensiveMargin:
     def count_jobs_by_year(self):
         # count the total number of jobs each year
         df = self.jobs.groupby(['year'])['JOB_POST_ID'].count().reset_index()
-        df = helper.scale_counts(df, 'JOB_POST_ID')
-        df.rename(columns={'scaled_JOB_POST_ID': 'yearly_overall_job_count'}, inplace=True)
-        df.drop(columns=['JOB_POST_ID'], inplace=True)
+        df.rename(columns={'JOB_POST_ID': 'yearly_overall_job_count'}, inplace=True)
         return df
 
     def count_jobs_by_sector(self):
         # count the total number of jobs in each sector each year
         df = self.jobs.groupby(['AES', 'year'])['JOB_POST_ID'].count().reset_index()
-        df = helper.scale_counts(df, 'JOB_POST_ID')
-        df.rename(columns={'scaled_JOB_POST_ID': 'sector_overall_job_count'}, inplace=True)
-        df.drop(columns=['JOB_POST_ID'], inplace=True)
+        df.rename(columns={'JOB_POST_ID': 'sector_overall_job_count'}, inplace=True)
         return df
 
     def count_ict_jobs_by_sector(self):
         # count the total number of ICT/non-ICT jobs in each sector each year
         df = self.jobs.groupby(['AES', 'year', 'ict'])['JOB_POST_ID'].count().reset_index()
-        df = helper.scale_counts(df, 'JOB_POST_ID')
-        df.rename(columns={'scaled_JOB_POST_ID': 'job_count'}, inplace=True)
-        df.drop(columns=['JOB_POST_ID'], inplace=True)
+        df.rename(columns={'JOB_POST_ID': 'job_count'}, inplace=True)
         return df
 
     def count_ict_jobs_by_year(self):
         # count the total number of ICT/non-ICT jobs each year
         df = self.jobs.groupby(['year', 'ict'])['JOB_POST_ID'].count().reset_index()
-        df = helper.scale_counts(df, 'JOB_POST_ID')
-        df.rename(columns={'scaled_JOB_POST_ID': 'job_count'}, inplace=True)
-        df.drop(columns=['JOB_POST_ID'], inplace=True)
+        df.rename(columns={'JOB_POST_ID': 'job_count'}, inplace=True)
         return df
 
     def prop_jobs_by_sector(self, year_job_count, sector_job_count):
@@ -104,9 +96,7 @@ class ExploreExtensiveMargin:
         # count the total number of jobs in each ICT SSOC4D in each sector each year
         df = self.jobs[self.jobs['ict']]
         df = df.groupby(['year', 'AES', 'SSOC4D'])['JOB_POST_ID'].count().reset_index()
-        df = helper.scale_counts(df, 'JOB_POST_ID')
-        df.rename(columns={'scaled_JOB_POST_ID': 'job_count'}, inplace=True)
-        df.drop(columns=['JOB_POST_ID'], inplace=True)
+        df.rename(columns={'JOB_POST_ID': 'job_count'}, inplace=True)
         return df
 
     def prop_ict_ssoc_by_sector(self, sector_ict_job_count, ssoc_ict_job_count):
