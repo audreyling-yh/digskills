@@ -3,6 +3,7 @@ import config
 from src.ConvertMCFJobsToBert import ConvertMCFJobsToBert
 from src.ConvertSSGTscToBert import ConvertSSGTscToBert
 from src.ExploreExtensiveMargin import ExploreExtensiveMargin
+from src.ExploreIntensiveMargin import ExploreIntensiveMargin
 from src.ExploreSubtrackTsc import ExploreSubtrackTsc
 from src.ExploreRolesAndSkills import ExploreRolesAndSkills
 from src.GetIctSkills import GetIctSkills
@@ -101,8 +102,12 @@ if __name__ == '__main__':
     # jobtotracks=MatchMCFJobsToIctTracks(digital_skills_filtered,mcf_jobpostings_digskills_folder,mcf_jobpostings_digtracks)
     # jobtotracks.run()
 
-    # Extensive margin
-    exploreextensive = ExploreExtensiveMargin(img,analysis,ict_jobs_with_dau_ssoc)
-    exploreextensive.run()
+    # # Extensive margin
+    # exploreextensive = ExploreExtensiveMargin(analysis,ict_jobs_with_dau_ssoc)
+    # exploreextensive.run()
 
     # TODO: Intensive margin analysis
+    # Intensive margin
+    exploreintensive=ExploreIntensiveMargin(img,analysis)
+    exploreintensive.run()
+
