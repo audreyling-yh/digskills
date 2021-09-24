@@ -6,11 +6,13 @@ from datetime import datetime
 
 
 class MatchMCFJobsToIctSkills:
-    def __init__(self, ict_tsc_filepath, job_postings_folder, cosine_matrix_outputpath, job_tsc_outputpath):
+    def __init__(self, ict_tsc_filepath, job_postings_folder, cosine_matrix_outputpath, job_tsc_outputpath,
+                 cosine_threshold=0.85):
         self.ict_tsc_filepath = ict_tsc_filepath
         self.job_postings_folder = job_postings_folder
         self.cosine_matrix_outputpath = cosine_matrix_outputpath
         self.job_tsc_outputpath = job_tsc_outputpath
+        self.cosine=cosine_threshold
 
         self.tsc = None
 
@@ -35,7 +37,7 @@ class MatchMCFJobsToIctSkills:
             cosine.to_csv(self.cosine_matrix_outputpath.format(filename), index=True)
 
             # For each job, get a list of TSC-profs that have cosine sim above threshold
-            jobs_updated = self.get_tscs_for_jobs(jobs, cosine, cosine_threshold=0.85)
+            jobs_updated = self.get_tscs_for_jobs(jobs, cosine, cosine_threshold=self.cosine)
             jobs_updated.to_csv(self.job_tsc_outputpath.format(filename), index=False)
 
         print(datetime.now() - startTime)
@@ -68,7 +70,7 @@ class MatchMCFJobsToIctSkills:
         return matrix
 
     def get_tscs_for_jobs(self, jobs, cosine_df, cosine_threshold=0.85):
-        print('Getting skills above cosine threshold...')
+        print('Getting skills above cosine threshold of {}...'.format(cosine_threshold))
         job_tscs = (cosine_df > cosine_threshold).apply(lambda x: cosine_df.columns[x.tolist()].tolist(), axis=1)
         jobs['skill_list'] = job_tscs
         return jobs

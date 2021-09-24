@@ -92,15 +92,15 @@ if __name__ == '__main__':
     # splitjobs=SplitMCFJobs(mcf_jobpostings_bert_folder,mcf_jobpostings_bert_split)
     # splitjobs.run()
 
-    # # get a list of ict skills matched to each job using cosine similarity of bert embeddings
-    # # CAUTION: Will take about 3 hours
-    # jobtoskills = MatchMCFJobsToIctSkills(digital_skills_filtered, mcf_jobpostings_bert_splitfolder, cosine,
-    #                                       mcf_jobpostings_digskills)
-    # jobtoskills.run()
+    # get a list of ict skills matched to each job using cosine similarity of bert embeddings
+    # CAUTION: Will take about 3 hours
+    jobtoskills = MatchMCFJobsToIctSkills(digital_skills_filtered, mcf_jobpostings_bert_splitfolder, cosine,
+                                          mcf_jobpostings_digskills, cosine_threshold=0.8)
+    jobtoskills.run()
 
-    # # get main and subtracks of each job
-    # jobtotracks=MatchMCFJobsToIctTracks(digital_skills_filtered,mcf_jobpostings_digskills_folder,mcf_jobpostings_digtracks)
-    # jobtotracks.run()
+    # get main and subtracks of each job
+    jobtotracks=MatchMCFJobsToIctTracks(digital_skills_filtered,mcf_jobpostings_digskills_folder,mcf_jobpostings_digtracks)
+    jobtotracks.run()
 
     # # Extensive margin
     # exploreextensive = ExploreExtensiveMargin(analysis,ict_jobs_with_dau_ssoc)
