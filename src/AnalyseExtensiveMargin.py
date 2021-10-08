@@ -2,7 +2,7 @@ import helper
 import pandas as pd
 
 
-class ExploreExtensiveMargin:
+class AnalyseExtensiveMargin:
     def __init__(self, analysis_filepath, ict_jobs_filepath):
         self.analysis_filepath = analysis_filepath
         self.ict_jobs_filepath = ict_jobs_filepath

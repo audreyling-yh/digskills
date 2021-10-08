@@ -4,7 +4,7 @@ import config
 from datetime import datetime
 
 
-class MapMCFJobsToSsoc:
+class ProcessMCFJobs:
     def __init__(self, postings_dir, output_filepath, ssoc2015_to_2020_filepath):
         self.postings_dir = postings_dir
         self.output_filepath = output_filepath
@@ -13,7 +13,6 @@ class MapMCFJobsToSsoc:
 
     def run(self):
         self.job_to_ssoc(self.postings_dir)
-        return
 
     def job_to_ssoc(self, folder):
         # Combine job info and detail files
@@ -63,10 +62,16 @@ class MapMCFJobsToSsoc:
             merged_filtered['year'] = merged_filtered['date'].apply(lambda x: x.year)
             merged_filtered['month'] = merged_filtered['date'].apply(lambda x: x.month)
 
+            # clean file
+            merged_filtered.drop_duplicates(inplace=True)
+            merged_filtered.dropna(subset=['JOB_POST_DESC'], inplace=True)
+            merged_filtered=merged_filtered[merged_filtered['JOB_POST_DESC']!='']
+
             output = self.output_filepath.format(path.split('/')[-1].split('.')[0])
             merged_filtered.to_csv(output, index=False)
 
     def ssic_to_aes(self, ssic):
+        # Get AES sector of employer
         aes_mapping = config.aes_ssic_mapping
         aes = None
 

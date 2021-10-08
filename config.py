@@ -1,74 +1,50 @@
 filepaths = {
+    'abilities':{
+        'folder':'data/',
+        'filename':'abilities.csv'
+    },
     'analysis': {
         'folder': 'data/analysis/',
         'filename': '{}.csv'
     },
-    'cosine_matrix': {
-        'folder': 'data/cosine/',
-        'filename': '{}_cosine.csv'
+    'job_ability_cosine_matrix': {
+        'folder': 'data/job_ability_cosine/',
+        'filename': '{}_cosine.npy'
     },
-    'digital_jobs_ssoc': {
-        'folder': 'data/ict_jobs/',
-        'filename': 'ict_jobs_ssoc.csv'
+    'job_tsc_cosine_matrix': {
+        'folder': 'data/job_tsc_cosine/',
+        'filename': '{}_cosine.npy'
     },
     'digital_jobs_dau_ssoc': {
         'folder': 'data/ict_jobs/',
         'filename': 'ict_jobs_dau_ssoc.csv'
     },
-    'digital_skills': {
-        'folder': 'data/ict_skills/',
-        'filename': 'ict_tsc.csv'
-    },
-    'digital_skills_filtered': {
-        'folder': 'data/ict_skills/',
-        'filename': 'ict_tsc_final.csv'
-    },
     'img': {
         'folder': 'img/',
         'filename': '{}.png'
     },
-    'img_data': {
-        'folder': 'img/data/',
-        'filename': '{}.csv',
-    },
     'mcf_jobpostings_bert': {
         'folder': 'data/jobpostings_bert/',
-        'filename': '{}_bert.csv'
+        'filename': '{}_bert.npy'
     },
-    'mcf_jobpostings_bert_split': {
-        'folder': 'data/jobpostings_bert_split/',
-        'filename': '{}{}.csv'
+    'mcf_jobpostings_final': {
+        'folder': 'data/jobpostings_final/',
+        'filename': '{}_final.csv'
     },
     'mcf_jobpostings_original': {
-        'folder': 'data/jobpostings/',
+        'folder': 'data/jobpostings_raw/',
     },
-    'mcf_jobpostings_ssoc': {
-        'folder': 'data/jobpostings_ssoc/',
-        'filename': '{}_SSOC.csv'
-    },
-    'mcf_jobpostings_digital_skills': {
-        'folder': 'data/jobpostings_ictskills/',
-        'filename': '{}_ictskills.csv'
-    },
-    'mcf_jobpostings_digital_tracks': {
-        'folder': 'data/jobpostings_icttracks/',
-        'filename': '{}_icttracks.csv'
+    'mcf_jobpostings_processed': {
+        'folder': 'data/jobpostings_processed/',
+        'filename': '{}_processed.csv'
     },
     'role_to_tsc': {
         'folder': 'data/ssg/',
         'filename': 'link_role_to_tsc.csv'
     },
-    'ssg_skills_original': {
+    'ssg_ict_skills_original': {
         'folder': 'data/ssg/',
-        'filename': 'link_tsc_to_items.csv'
-    },
-    'ssg_skills_bert': {
-        'folder': 'data/',
-        'filename': 'link_tsc_to_items_bert.csv'
-    },
-    'ssoc_index_original': {
-        'folder': 'data/ssoc/',
-        'filename': 'SSOC2020 Alphabetical Index.xlsx'
+        'filename': 'ict_skills.csv'
     },
     'ssoc2015_to_2020_original': {
         'folder': 'data/ssoc/',
@@ -340,21 +316,21 @@ job_subtrack = {
 }
 
 jobposting_detail_info_mapping = {
-    'data/jobpostings/JOB_POST_DETAILS_1.txt': 'data/jobpostings/JOB_POST.txt',
-    'data/jobpostings/JOB_POST_DETAILS_2.txt': 'data/jobpostings/JOB_POST.txt',
-    'data/jobpostings/JOB_POST_DETAILS_202007.txt': 'data/jobpostings/JOB_POST_202007.txt',
-    'data/jobpostings/JOB_POST_DETAILS_202008.txt': 'data/jobpostings/JOB_POST_202008.txt',
-    'data/jobpostings/JOB_POST_DETAILS3_202009_rectified.txt': 'data/jobpostings/JOB_POST3_202009.txt',
-    'data/jobpostings/JOB_POST_DETAILS_202010.txt': 'data/jobpostings/JOB_POST_202010.txt',
-    'data/jobpostings/JOB_POST_DETAILS_202011.txt': 'data/jobpostings/JOB_POST_202011.txt',
-    'data/jobpostings/JOB_POST_DETAILS_202012.txt': 'data/jobpostings/JOB_POST_202012.txt',
-    'data/jobpostings/JOB_POST_DETAILS_202101.txt': 'data/jobpostings/JOB_POST_202101.txt',
-    'data/jobpostings/JOB_POST_DETAILS_202102.txt': 'data/jobpostings/JOB_POST_202102.txt',
-    'data/jobpostings/JOB_POST_DETAILS_202103.txt': 'data/jobpostings/JOB_POST_202103.txt',
-    'data/jobpostings/JOB_POST_DETAILS_202104.txt': 'data/jobpostings/JOB_POST_202104.txt',
-    'data/jobpostings/JOB_POST_DETAILS_202105.txt': 'data/jobpostings/JOB_POST_202105.txt',
-    'data/jobpostings/JOB_POST_DETAILS_202106.txt': 'data/jobpostings/JOB_POST_202106.txt',
-    'data/jobpostings/JOB_POST_DETAILS_202107.txt': 'data/jobpostings/JOB_POST_202107.txt',
+    'data/jobpostings_raw/JOB_POST_DETAILS_1.txt': 'data/jobpostings_raw/JOB_POST.txt',
+    'data/jobpostings_raw/JOB_POST_DETAILS_2.txt': 'data/jobpostings_raw/JOB_POST.txt',
+    'data/jobpostings_raw/JOB_POST_DETAILS_202007.txt': 'data/jobpostings_raw/JOB_POST_202007.txt',
+    'data/jobpostings_raw/JOB_POST_DETAILS_202008.txt': 'data/jobpostings_raw/JOB_POST_202008.txt',
+    'data/jobpostings_raw/JOB_POST_DETAILS3_202009_rectified.txt': 'data/jobpostings_raw/JOB_POST3_202009.txt',
+    'data/jobpostings_raw/JOB_POST_DETAILS_202010.txt': 'data/jobpostings_raw/JOB_POST_202010.txt',
+    'data/jobpostings_raw/JOB_POST_DETAILS_202011.txt': 'data/jobpostings_raw/JOB_POST_202011.txt',
+    'data/jobpostings_raw/JOB_POST_DETAILS_202012.txt': 'data/jobpostings_raw/JOB_POST_202012.txt',
+    'data/jobpostings_raw/JOB_POST_DETAILS_202101.txt': 'data/jobpostings_raw/JOB_POST_202101.txt',
+    'data/jobpostings_raw/JOB_POST_DETAILS_202102.txt': 'data/jobpostings_raw/JOB_POST_202102.txt',
+    'data/jobpostings_raw/JOB_POST_DETAILS_202103.txt': 'data/jobpostings_raw/JOB_POST_202103.txt',
+    'data/jobpostings_raw/JOB_POST_DETAILS_202104.txt': 'data/jobpostings_raw/JOB_POST_202104.txt',
+    'data/jobpostings_raw/JOB_POST_DETAILS_202105.txt': 'data/jobpostings_raw/JOB_POST_202105.txt',
+    'data/jobpostings_raw/JOB_POST_DETAILS_202106.txt': 'data/jobpostings_raw/JOB_POST_202106.txt',
+    'data/jobpostings_raw/JOB_POST_DETAILS_202107.txt': 'data/jobpostings_raw/JOB_POST_202107.txt',
 
 }
 

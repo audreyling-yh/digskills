@@ -1,17 +1,16 @@
 import os
 import config
+import sys
+
+from src.CalculateJobAbilityCosine import CalculateJobAbilityCosine
+from src.CalculateJobTscCosine import CalculateJobTscCosine
+from src.ConvertAbilitiesToBert import ConvertAbilitiesToBert
 from src.ConvertMCFJobsToBert import ConvertMCFJobsToBert
-from src.ConvertSSGTscToBert import ConvertSSGTscToBert
-from src.ExploreExtensiveMargin import ExploreExtensiveMargin
-from src.ExploreIntensiveMargin import ExploreIntensiveMargin
-from src.ExploreSubtrackTsc import ExploreSubtrackTsc
-from src.ExploreRolesAndSkills import ExploreRolesAndSkills
-from src.GetIctSkills import GetIctSkills
-from src.MapIctJobsToSsoc import MapIctJobsToSsoc
-from src.MapMCFJobsToSsoc import MapMCFJobsToSsoc
-from src.MatchMCFJobsToIctSkills import MatchMCFJobsToIctSkills
-from src.MatchMCFJobsToIctTracks import MatchMCFJobsToIctTracks
-from src.SplitMCFJobs import SplitMCFJobs
+from src.AnalyseExtensiveMargin import AnalyseExtensiveMargin
+from src.AnalyseIntensiveMargin import AnalyseIntensiveMargin
+from src.ProcessICTJobs import ProcessICTJobs
+from src.ProcessMCFJobs import ProcessMCFJobs
+from src.MatchTscToJob import MatchTscToJob
 
 # Create folders
 filepaths = config.filepaths
@@ -20,94 +19,100 @@ for i in folders:
     os.makedirs(i, exist_ok=True)
 
 # Get filepaths
-original_ssg = filepaths['ssg_skills_original']['folder'] + filepaths['ssg_skills_original']['filename']
+original_ict_skills = filepaths['ssg_ict_skills_original']['folder'] + filepaths['ssg_ict_skills_original']['filename']
 original_role_to_tsc = filepaths['role_to_tsc']['folder'] + filepaths['role_to_tsc']['filename']
-original_ssoc_index = filepaths['ssoc_index_original']['folder'] + filepaths['ssoc_index_original']['filename']
 original_ssoc2015_to_2020 = filepaths['ssoc2015_to_2020_original']['folder'] + filepaths['ssoc2015_to_2020_original'][
     'filename']
 
 dau_ssoc_index = filepaths['ssoc_index_dau']['folder'] + filepaths['ssoc_index_dau']['filename']
 
+abilities = filepaths['abilities']['folder'] + filepaths['abilities']['filename']
+
 img = filepaths['img']['folder'] + filepaths['img']['filename']
-img_data = filepaths['img_data']['folder'] + filepaths['img_data']['filename']
 
-ssg_with_bert = filepaths['ssg_skills_bert']['folder'] + filepaths['ssg_skills_bert']['filename']
-
-digital_skills = filepaths['digital_skills']['folder'] + filepaths['digital_skills']['filename']
-digital_skills_filtered = filepaths['digital_skills_filtered']['folder'] + filepaths['digital_skills_filtered'][
-    'filename']
-
-ict_jobs_with_ssoc = filepaths['digital_jobs_ssoc']['folder'] + filepaths['digital_jobs_ssoc']['filename']
 ict_jobs_with_dau_ssoc = filepaths['digital_jobs_dau_ssoc']['folder'] + filepaths['digital_jobs_dau_ssoc']['filename']
 
-mcf_jobpostings_ssoc = filepaths['mcf_jobpostings_ssoc']['folder'] + filepaths['mcf_jobpostings_ssoc']['filename']
+mcf_jobpostings_processed = filepaths['mcf_jobpostings_processed']['folder'] + filepaths['mcf_jobpostings_processed'][
+    'filename']
 mcf_jobpostings_bert = filepaths['mcf_jobpostings_bert']['folder'] + filepaths['mcf_jobpostings_bert']['filename']
-mcf_jobpostings_bert_split = filepaths['mcf_jobpostings_bert_split']['folder'] + \
-                             filepaths['mcf_jobpostings_bert_split']['filename']
-mcf_jobpostings_digskills = filepaths['mcf_jobpostings_digital_skills']['folder'] + \
-                            filepaths['mcf_jobpostings_digital_skills']['filename']
-mcf_jobpostings_digtracks = filepaths['mcf_jobpostings_digital_tracks']['folder'] + \
-                            filepaths['mcf_jobpostings_digital_tracks']['filename']
+mcf_jobpostings_final = filepaths['mcf_jobpostings_final']['folder'] + filepaths['mcf_jobpostings_final']['filename']
 
-cosine = filepaths['cosine_matrix']['folder'] + filepaths['cosine_matrix']['filename']
+job_ability_cosine = filepaths['job_ability_cosine_matrix']['folder'] + filepaths['job_ability_cosine_matrix'][
+    'filename']
+job_tsc_cosine = filepaths['job_tsc_cosine_matrix']['folder'] + filepaths['job_tsc_cosine_matrix']['filename']
 
 analysis = filepaths['analysis']['folder'] + filepaths['analysis']['filename']
 
 # Get folders
-mcf_jobpostings_folder = filepaths['mcf_jobpostings_original']['folder']
-mcf_jobpostings_ssoc_folder = filepaths['mcf_jobpostings_ssoc']['folder']
+mcf_jobpostings_raw_folder = filepaths['mcf_jobpostings_original']['folder']
+mcf_jobpostings_processed_folder = filepaths['mcf_jobpostings_processed']['folder']
 mcf_jobpostings_bert_folder = filepaths['mcf_jobpostings_bert']['folder']
-mcf_jobpostings_bert_splitfolder = filepaths['mcf_jobpostings_bert_split']['folder']
-mcf_jobpostings_digskills_folder = filepaths['mcf_jobpostings_digital_skills']['folder']
-mcf_jobpostings_digtracks_folder = filepaths['mcf_jobpostings_digital_tracks']['folder']
 
 if __name__ == '__main__':
-    # # convert tsc-proficiency abilities list to Bert word embeddings
-    # # Takes abt 7 min on GPU
-    # tsctobert = ConvertSSGTscToBert(original_ssg, ssg_with_bert)
-    # tsctobert.run()
+    def process_frameworks():
+        # convert ict tsc-proficiency abilities to bert word embeddings
+        ca = ConvertAbilitiesToBert(original_ict_skills, abilities)
+        ca.run()
 
-    # # tag each ICT skills framework job with an ssoc4d 2020 (dau mapping)
-    # icttossoc = MapIctJobsToSsoc(original_role_to_tsc, original_ssoc_index, dau_ssoc_index, ict_jobs_with_dau_ssoc)
-    # icttossoc.run()
+        # tag each ict job with an ssoc4d 2020 (dau mapping)
+        mi = ProcessICTJobs(original_role_to_tsc, dau_ssoc_index, ict_jobs_with_dau_ssoc)
+        mi.run()
 
-    # # filter tsc-prof bert embeddings to include only ict/digital ones
-    # tsctoict = GetIctSkills(ssg_with_bert, ict_jobs_with_dau_ssoc, digital_skills)
-    # tsctoict.run()
 
-    # # tag each job posting with ssoc4d/1d 2020 and AES sector of the hiring org, and remove non-PMET jobs
-    # jobtossoc = MapMCFJobsToSsoc(mcf_jobpostings_folder, mcf_jobpostings_ssoc, original_ssoc2015_to_2020)
-    # jobtossoc.run()
+    def process_jobpostings():
+        # tag each job posting with ssoc4d (2020) and AES sector of the hiring org, and remove non-PMET jobs
+        mm = ProcessMCFJobs(mcf_jobpostings_raw_folder, mcf_jobpostings_processed, original_ssoc2015_to_2020)
+        mm.run()
 
-    # # get plots of tsc-proficiency and subtracks distribution, drops skills that are in too many tracks
-    # exploresubtracktsc = ExploreSubtrackTsc(digital_skills, digital_skills_filtered, img)
-    # exploresubtracktsc.run()
+        # combine all job description text files into a dataframe and obtain bert embeddings for each job
+        # CAUTION: Will take about 6 hours to run on GPU
+        cm = ConvertMCFJobsToBert(mcf_jobpostings_processed_folder, mcf_jobpostings_bert)
+        cm.run()
 
-    # # combine all job description text files into a dataframe and obtain Bert embeddings for each job
-    # # CAUTION: Will take about 20 hours to run on GPU
-    # jobtobert = ConvertMCFJobsToBert(mcf_jobpostings_ssoc_folder, mcf_jobpostings_bert)
-    # jobtobert.run()
 
-    # # Split large mcf job postings files into smaller files
-    # splitjobs=SplitMCFJobs(mcf_jobpostings_bert_folder,mcf_jobpostings_bert_split)
-    # splitjobs.run()
+    def match():
+        # get cosine similarity between each job and ability
+        cj = CalculateJobAbilityCosine(abilities, mcf_jobpostings_bert_folder, job_ability_cosine)
+        cj.run()
 
-    # get a list of ict skills matched to each job using cosine similarity of bert embeddings
-    # CAUTION: Will take about 3 hours
-    jobtoskills = MatchMCFJobsToIctSkills(digital_skills_filtered, mcf_jobpostings_bert_splitfolder, cosine,
-                                          mcf_jobpostings_digskills, cosine_threshold=0.8)
-    jobtoskills.run()
+        # get cosine similarity between each job and tsc
+        cj = CalculateJobTscCosine(abilities, original_ict_skills, mcf_jobpostings_bert_folder, job_ability_cosine,
+                                   job_tsc_cosine)
+        cj.run()
 
-    # get main and subtracks of each job
-    jobtotracks=MatchMCFJobsToIctTracks(digital_skills_filtered,mcf_jobpostings_digskills_folder,mcf_jobpostings_digtracks)
-    jobtotracks.run()
+        # get tscs matched to each job
+        mt = MatchTscToJob(original_ict_skills, mcf_jobpostings_processed_folder, job_tsc_cosine, mcf_jobpostings_final,
+                           cosine_threshold=0.3)
+        mt.run()
 
-    # # Extensive margin
-    # exploreextensive = ExploreExtensiveMargin(analysis,ict_jobs_with_dau_ssoc)
-    # exploreextensive.run()
 
-    # TODO: Intensive margin analysis
-    # Intensive margin
-    exploreintensive=ExploreIntensiveMargin(img,analysis)
-    exploreintensive.run()
+    def analyse():
+        # Extensive margin
+        ae = AnalyseExtensiveMargin(analysis, ict_jobs_with_dau_ssoc)
+        ae.run()
 
+        # Intensive margin
+        ai = AnalyseIntensiveMargin(img, analysis, ict_jobs_with_dau_ssoc)
+        ai.run()
+
+
+    processes_map = {
+        'PROCESS_FW': process_frameworks,
+        'PROCESS_JOBS': process_jobpostings,
+        'MATCH': match,
+        'ANALYSIS': analyse
+    }
+
+    processes = [
+        'PROCESS_FW',
+        'PROCESS_JOBS',
+        'MATCH',
+        'ANALYSIS'
+    ]
+
+    if len(sys.argv) > 1:
+        processes = [x for x in sys.argv[1].split(',')]
+
+    for i in processes:
+        func = processes_map[i]
+        func()
