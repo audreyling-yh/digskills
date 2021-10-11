@@ -6,7 +6,7 @@ import helper
 import matplotlib.pyplot as plt
 import seaborn as sns
 import matplotlib
-from wordcloud import WordCloud, STOPWORDS
+from wordcloud import WordCloud
 
 
 class AnalyseIntensiveMargin:
@@ -22,15 +22,15 @@ class AnalyseIntensiveMargin:
         self.jobs = helper.get_all_postings()
         self.jobs = self.indicate_ict_job(self.jobs)
 
-        # count_jobs_by_ssoc = self.count_jobs_by_ssoc()
-        # avg_tsc_categories_by_ssoc = self.avg_categories_per_job_in_ssoc(count_jobs_by_ssoc)
-        # self.change_avg_categories_per_job_in_ssoc(avg_tsc_categories_by_ssoc)
-        #
-        # self.tsc_categories_pdf()
-        # self.tsc_categories_cdf()
-        #
-        # prop_jobs_by_tsc_category = self.prop_jobs_per_tsc_category_in_ssoc()
-        # self.change_prop_jobs_per_tsc_category_in_ssoc(prop_jobs_by_tsc_category)
+        count_jobs_by_ssoc = self.count_jobs_by_ssoc()
+        avg_tsc_categories_by_ssoc = self.avg_categories_per_job_in_ssoc(count_jobs_by_ssoc)
+        self.change_avg_categories_per_job_in_ssoc(avg_tsc_categories_by_ssoc)
+
+        self.tsc_categories_pdf()
+        self.tsc_categories_cdf()
+
+        prop_jobs_by_tsc_category = self.prop_jobs_per_tsc_category_in_ssoc()
+        self.change_prop_jobs_per_tsc_category_in_ssoc(prop_jobs_by_tsc_category)
 
         self.programming_word_clouds()
 
