@@ -22,6 +22,7 @@ Job postings
 WSG
 
 ict_skills.csv
-Manually compiled from https://www.skillsfuture.gov.sg/skills-framework/ict
+Compiled from https://www.skillsfuture.gov.sg/skills-framework/ict
 
-
+programminglanguages.txt
+Compiled from https://spectrum.ieee.org/top-programming-languages/#toggle-gdpr (Toggle to rank by jobs)

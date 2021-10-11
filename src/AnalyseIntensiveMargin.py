@@ -28,11 +28,11 @@ class AnalyseIntensiveMargin:
         #
         # self.tsc_categories_pdf()
         # self.tsc_categories_cdf()
+        #
+        # prop_jobs_by_tsc_category = self.prop_jobs_per_tsc_category_in_ssoc()
+        # self.change_prop_jobs_per_tsc_category_in_ssoc(prop_jobs_by_tsc_category)
 
-        prop_jobs_by_tsc_category = self.prop_jobs_per_tsc_category_in_ssoc()
-        self.change_prop_jobs_per_tsc_category_in_ssoc(prop_jobs_by_tsc_category)
-
-        self.skill_word_clouds()
+        self.programming_word_clouds()
 
     def indicate_ict_job(self, df):
         # get ICT SSOC4Ds
@@ -170,35 +170,49 @@ class AnalyseIntensiveMargin:
         filepath = self.analysis_filepath.format('prop_jobs_change_by_tsc_category')
         helper.save_csv(df, filepath)
 
-    def skill_word_clouds(self):
+    def programming_word_clouds(self):
+        # set font
+        fontpath = 'C://Windows/Fonts/Arial.ttf'
+
         # get only some ssocs
-        ssocs = [2512, 2152, 2511]
+        ssocs = [2512, 2152, 2511, 2524]
         df = self.jobs[self.jobs['SSOC4D'].isin(ssocs)]
 
         # get jobs in 2018 and 2021
         df = df[df['year'].isin(['2018', '2021'])]
 
+        # drop jobs that mention no programming languages
+        df.dropna(subset=['programming_languages'], inplace=True)
+
+        # set different colors for dif years
+        min_val, max_val = 0.3, 1.0
+        n = 10
+        colors = {
+            '2018': matplotlib.colors.LinearSegmentedColormap.from_list("mycmap",
+                                                                        plt.cm.Blues(np.linspace(min_val, max_val, n))),
+            '2021': matplotlib.colors.LinearSegmentedColormap.from_list("mycmap", plt.cm.Purples(
+                np.linspace(min_val, max_val, n))),
+        }
+
         # get word clouds for each year and ssoc
-        my_stopwords = ['will', 'well', 'able', 'required', 'provide']
-        for ssoc in df['SSOC4D'].unique():
-            for year in df['year'].unique():
-                temp = df[(df['SSOC4D'] == ssoc) & (df['year'] == year)]
+        ssoc_list = df['SSOC4D'].unique()
+        year_list = df['year'].unique()
+        combination_list = [(ssoc, year) for ssoc in ssoc_list for year in year_list]
 
-                # remove super light blues
-                min_val, max_val = 0.3, 1.0
-                n = 10
-                colors = matplotlib.colors.LinearSegmentedColormap.from_list("mycmap",
-                                                                             plt.cm.Blues(
-                                                                                 np.linspace(min_val, max_val, n)))
+        for (ssoc, year) in combination_list:
+            temp = df[(df['SSOC4D'] == ssoc) & (df['year'] == year)]
 
-                text = ' '.join(temp['JOB_POST_DESC']).lower()
-                text = text.encode('ascii', 'ignore').decode()
+            # get term frequency dict
+            programming_languages = sum([x.split(';') for x in temp['programming_languages']], [])
+            unique_languages = list(set(programming_languages))
+            freq_dict = {word: programming_languages.count(word) for word in unique_languages}
 
-                # Create a wordcloud and save to img folder
-                plt.figure(figsize=(10, 8))
-                wordcloud = WordCloud(max_words=50, background_color='white', prefer_horizontal=1, colormap=colors,
-                                      width=2500, height=1500, stopwords=list(STOPWORDS) + my_stopwords).generate(text)
-                plt.axis("off")
+            # Create a wordcloud and save to img folder
+            plt.figure(figsize=(10, 8))
+            wordcloud = WordCloud(max_words=50, background_color='white', prefer_horizontal=1,
+                                  colormap=colors[year], width=2500, height=1500,
+                                  font_path=fontpath).generate_from_frequencies(freq_dict)
+            plt.axis("off")
 
-                wordcloud.to_file(self.img_filepath.format('ssoc{}_{}'.format(ssoc, year)))
-                plt.close()
+            wordcloud.to_file(self.img_filepath.format('programming_ssoc{}_{}'.format(ssoc, year)))
+            plt.close()

@@ -28,7 +28,7 @@ def get_all_postings():
 
     postings_folder = filepaths['mcf_jobpostings_final']['folder']
     cols = ['JOB_POST_ID', 'JOB_POST_DESC', 'AES', 'SSOC4D', 'SSOC1D', 'date', 'year', 'month', 'tsc_list', 'tsc_count',
-            'tsc_category', 'tsc_category_count']
+            'tsc_category', 'tsc_category_count', 'programming_languages']
 
     for i in os.listdir(postings_folder):
         print('Reading {}'.format(i))

@@ -24,12 +24,10 @@ original_role_to_tsc = filepaths['role_to_tsc']['folder'] + filepaths['role_to_t
 original_ssoc2015_to_2020 = filepaths['ssoc2015_to_2020_original']['folder'] + filepaths['ssoc2015_to_2020_original'][
     'filename']
 
+programming_languages = filepaths['programming_languages']['folder'] + filepaths['programming_languages']['filename']
 dau_ssoc_index = filepaths['ssoc_index_dau']['folder'] + filepaths['ssoc_index_dau']['filename']
 
 abilities = filepaths['abilities']['folder'] + filepaths['abilities']['filename']
-
-img = filepaths['img']['folder'] + filepaths['img']['filename']
-
 ict_jobs_with_dau_ssoc = filepaths['digital_jobs_dau_ssoc']['folder'] + filepaths['digital_jobs_dau_ssoc']['filename']
 
 mcf_jobpostings_processed = filepaths['mcf_jobpostings_processed']['folder'] + filepaths['mcf_jobpostings_processed'][
@@ -42,6 +40,7 @@ job_ability_cosine = filepaths['job_ability_cosine_matrix']['folder'] + filepath
 job_tsc_cosine = filepaths['job_tsc_cosine_matrix']['folder'] + filepaths['job_tsc_cosine_matrix']['filename']
 
 analysis = filepaths['analysis']['folder'] + filepaths['analysis']['filename']
+img = filepaths['img']['folder'] + filepaths['img']['filename']
 
 # Get folders
 mcf_jobpostings_raw_folder = filepaths['mcf_jobpostings_original']['folder']
@@ -61,7 +60,8 @@ if __name__ == '__main__':
 
     def process_jobpostings():
         # tag each job posting with ssoc4d (2020) and AES sector of the hiring org, and remove non-PMET jobs
-        mm = ProcessMCFJobs(mcf_jobpostings_raw_folder, mcf_jobpostings_processed, original_ssoc2015_to_2020)
+        mm = ProcessMCFJobs(mcf_jobpostings_raw_folder, mcf_jobpostings_processed, original_ssoc2015_to_2020,
+                            programming_languages)
         mm.run()
 
         # combine all job description text files into a dataframe and obtain bert embeddings for each job

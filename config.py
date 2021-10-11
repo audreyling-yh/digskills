@@ -1,7 +1,7 @@
 filepaths = {
-    'abilities':{
-        'folder':'data/',
-        'filename':'abilities.csv'
+    'abilities': {
+        'folder': 'data/',
+        'filename': 'abilities.csv'
     },
     'analysis': {
         'folder': 'data/analysis/',
@@ -37,6 +37,10 @@ filepaths = {
     'mcf_jobpostings_processed': {
         'folder': 'data/jobpostings_processed/',
         'filename': '{}_processed.csv'
+    },
+    'programming_languages': {
+        'folder': 'data/',
+        'filename': 'programminglanguages.txt'
     },
     'role_to_tsc': {
         'folder': 'data/ssg/',
