@@ -2,6 +2,7 @@ import os
 import ast
 import pandas as pd
 import numpy as np
+import config
 import helper
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -26,6 +27,18 @@ class AnalyseIntensiveMargin:
         avg_tsc_categories_by_ssoc = self.avg_categories_per_job_in_ssoc(count_jobs_by_ssoc)
         self.change_avg_categories_per_job_in_ssoc(avg_tsc_categories_by_ssoc)
 
+        prop_jobs_by_tsc_category = self.prop_jobs_per_tsc_category_in_ssoc()
+        self.change_prop_jobs_per_tsc_category_in_ssoc(prop_jobs_by_tsc_category)
+
+        os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
+        self.tsc_pdf()
+        self.tsc_pdf(type='ict')
+        self.tsc_pdf(type='nonict')
+
+        self.tsc_cdf()
+        self.tsc_cdf(type='ict')
+        self.tsc_cdf(type='nonict')
+
         self.tsc_categories_pdf()
         self.tsc_categories_pdf(type='ict')
         self.tsc_categories_pdf(type='nonict')
@@ -33,9 +46,6 @@ class AnalyseIntensiveMargin:
         self.tsc_categories_cdf()
         self.tsc_categories_cdf(type='ict')
         self.tsc_categories_cdf(type='nonict')
-
-        prop_jobs_by_tsc_category = self.prop_jobs_per_tsc_category_in_ssoc()
-        self.change_prop_jobs_per_tsc_category_in_ssoc(prop_jobs_by_tsc_category)
 
         self.programming_word_clouds()
         self.overall_word_clouds()
@@ -80,10 +90,74 @@ class AnalyseIntensiveMargin:
         filepath = self.analysis_filepath.format('avg_tsc_categories_change_by_ssoc')
         helper.save_csv(df, filepath)
 
-    def tsc_categories_pdf(self, type=None):
+    def tsc_pdf(self, type=None):
+        sns.set(style='ticks')
         os.environ['KMP_DUPLICATE_LIB_OK'] = 'True'
-        df = self.jobs[self.jobs['tsc_category_count'] != 0]
-        df.sort_values(by=['year'], inplace=True)
+        df = self.jobs.sort_values(by=['year'])
+
+        if type == 'ict':
+            df = df[df['ict']]
+            type_str = 'ict_'
+            graph_annotation = ' (ICT Occupations)'
+        elif type == 'nonict':
+            df = df[~df['ict']]
+            type_str = 'nonict_'
+            graph_annotation = ' (Non-ICT Occupations)'
+        else:
+            type_str, graph_annotation = '', ''
+
+        for year in df['year'].unique():
+            temp = df[df['year'] == year]
+            sns.kdeplot(temp['tsc_count'].tolist(), cumulative=False, label=year, alpha=0.8)
+
+        plt.xlim(xmin=0)
+        plt.ylim([0, 1.1])
+
+        # Add labels
+        plt.title('PDF of TSCs per Job Posting{}'.format(graph_annotation))
+        plt.xlabel('Number of TSCs Required per Job Posting')
+        plt.ylabel('Proportion of Job Postings')
+        plt.legend(title='Year')
+
+        filename = self.img_filepath.format('tsc_{}pdf'.format(type_str))
+        plt.savefig(filename, transparent=True)
+        plt.close()
+
+    def tsc_cdf(self, type=None):
+        sns.set(style='ticks')
+        df = self.jobs.sort_values(by=['year'])
+
+        if type == 'ict':
+            df = df[df['ict']]
+            type_str = 'ict_'
+            graph_annotation = ' (ICT Occupations)'
+        elif type == 'nonict':
+            df = df[~df['ict']]
+            type_str = 'nonict_'
+            graph_annotation = ' (Non-ICT Occupations)'
+        else:
+            type_str, graph_annotation = '', ''
+
+        for year in df['year'].unique():
+            temp = df[df['year'] == year]
+            sns.kdeplot(temp['tsc_count'].tolist(), cumulative=True, label=year, alpha=0.8)
+
+        plt.xlim(xmin=0)
+        plt.ylim([0, 1.1])
+
+        # Add labels
+        plt.title('CDF of TSCs per Job Posting{}'.format(graph_annotation))
+        plt.xlabel('Number of TSCs Required per Job Posting')
+        plt.ylabel('Proportion of Job Postings')
+        plt.legend(title='Year')
+
+        filename = self.img_filepath.format('tsc_{}cdf'.format(type_str))
+        plt.savefig(filename, transparent=True)
+        plt.close()
+
+    def tsc_categories_pdf(self, type=None):
+        sns.set(style='ticks')
+        df = self.jobs.sort_values(by=['year'])
 
         if type == 'ict':
             df = df[df['ict']]
@@ -111,8 +185,8 @@ class AnalyseIntensiveMargin:
         plt.close()
 
     def tsc_categories_cdf(self, type=None):
-        df = self.jobs[self.jobs['tsc_category_count'] != 0]
-        df.sort_values(by=['year'], inplace=True)
+        sns.set(style='ticks')
+        df = self.jobs.sort_values(by=['year'])
 
         if type == 'ict':
             df = df[df['ict']]
@@ -128,6 +202,9 @@ class AnalyseIntensiveMargin:
         for year in df['year'].unique():
             temp = df[df['year'] == year]
             sns.kdeplot(temp['tsc_category_count'].tolist(), cumulative=True, label=year, alpha=0.8)
+
+        plt.xlim(xmin=0)
+        plt.ylim([0, 1.1])
 
         # Add labels
         plt.title('CDF of TSC Categories per Job Posting{}'.format(graph_annotation))
@@ -203,7 +280,7 @@ class AnalyseIntensiveMargin:
         fontpath = 'C://Windows/Fonts/Arial.ttf'
 
         # get only some ssocs
-        ssocs = [2512, 2152, 2511, 2524, 2122]
+        ssocs = [2512, 2152, 2511, 2521, 2524, 2122, 2166]
         df = self.jobs[self.jobs['SSOC4D'].isin(ssocs)]
 
         # get jobs in 2018 and 2021
@@ -249,9 +326,8 @@ class AnalyseIntensiveMargin:
         # set font
         fontpath = 'C://Windows/Fonts/Arial.ttf'
 
-        # get only some ssocs
-        ssocs = [2512, 2152, 2511, 2524, 2122]
-        df = self.jobs[self.jobs['SSOC4D'].isin(ssocs)]
+        # get only ICT ssocs
+        df = self.jobs[self.jobs['ict']]
 
         # get jobs in 2018 and 2021
         df = df[df['year'].isin(['2018', '2021'])]
@@ -271,7 +347,6 @@ class AnalyseIntensiveMargin:
         year_list = df['year'].unique()
         combination_list = [(ssoc, year) for ssoc in ssoc_list for year in year_list]
 
-        my_stopwords = ['will', 'well', 'able', 'required', 'provide', 'experience', 'work', 'with', 'team', 'e', 'g']
         for (ssoc, year) in combination_list:
             temp = df[(df['SSOC4D'] == ssoc) & (df['year'] == year)]
 
@@ -281,7 +356,8 @@ class AnalyseIntensiveMargin:
             # Create a wordcloud and save to img folder
             plt.figure(figsize=(10, 8))
             wordcloud = WordCloud(max_words=50, background_color='white', prefer_horizontal=1, colormap=colors[year],
-                                  width=2500, height=1500, stopwords=list(STOPWORDS) + my_stopwords).generate(text)
+                                  width=2500, height=1500, stopwords=list(STOPWORDS) + config.my_stopwords).generate(
+                text)
             plt.axis("off")
 
             wordcloud.to_file(self.img_filepath.format('desc_ssoc{}_{}'.format(ssoc, year)))
