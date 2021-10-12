@@ -7,7 +7,7 @@ filepaths = config.filepaths
 
 def get_ict_skills(tsc_df):
     # filter out not-purely-tech TSCs
-    exclude_categories = ['Business Finance', 'General Management', 'People Management', 'Sales and Marketing',
+    exclude_categories = ['Business Finance', 'General Management', 'People Development', 'Sales and Marketing',
                           'Stakeholder and Contract Management']
     tsc_df = tsc_df[~tsc_df['tsc_category'].isin(exclude_categories)]
 

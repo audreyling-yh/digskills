@@ -29,7 +29,7 @@ class ConvertAbilitiesToBert:
     def convert_abilities_to_bert(self):
         # Activate GPU if any
         device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
-        model = SentenceTransformer('paraphrase-distilroberta-base-v1').to(device)
+        model = SentenceTransformer('all-distilroberta-v1').to(device)
 
         # convert to BERT
         embeddings_list = []

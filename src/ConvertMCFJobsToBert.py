@@ -31,7 +31,7 @@ class ConvertMCFJobsToBert:
 
             # Activate GPU if any
             device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
-            model = SentenceTransformer('paraphrase-distilroberta-base-v1').to(device)
+            model = SentenceTransformer('all-distilroberta-v1').to(device)
 
             embeddings_list = []
             for index, text in enumerate(jobdesc):

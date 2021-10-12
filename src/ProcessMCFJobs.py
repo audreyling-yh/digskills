@@ -14,7 +14,7 @@ class ProcessMCFJobs:
 
         self.ssoc_mapping = pd.DataFrame()
         self.languages = []
-        self.ngram_languages=[]
+        self.ngram_languages = []
 
     def run(self):
         self.read_data()
@@ -31,7 +31,7 @@ class ProcessMCFJobs:
         # get list of programming languages
         df = pd.read_csv(self.programlanguages_filepath, header=None)
         languages = [x.strip() for x in df[0].tolist()]
-        self.languages=[x for x in languages if ' ' not in x]
+        self.languages = [x for x in languages if ' ' not in x]
         self.ngram_languages = [x for x in languages if ' ' in x]
 
     def job_to_ssoc(self, folder):
@@ -136,14 +136,14 @@ class ProcessMCFJobs:
         return df
 
     def extract_programming_languages(self, job_description):
-        languages_in_desc=[]
+        languages_in_desc = []
 
         # title case job description
         if job_description.isupper() or job_description.islower():
             job_description = job_description.title()
 
         # get single word programming languages from job description
-        job_desc_tokens = [x.strip() for x in re.split('\W+', job_description) if x != '']
+        job_desc_tokens = re.findall(r'[^,?():;/{}!.\s]+', job_description)
         languages_in_desc += [x for x in self.languages if x in job_desc_tokens]
 
         # get multiple word programming languages from job description

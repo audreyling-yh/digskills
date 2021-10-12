@@ -65,7 +65,7 @@ if __name__ == '__main__':
         mm.run()
 
         # combine all job description text files into a dataframe and obtain bert embeddings for each job
-        # CAUTION: Will take about 6 hours to run on GPU
+        # CAUTION: Will take about 8 hours to run on GPU
         cm = ConvertMCFJobsToBert(mcf_jobpostings_processed_folder, mcf_jobpostings_bert)
         cm.run()
 
@@ -82,7 +82,7 @@ if __name__ == '__main__':
 
         # get tscs matched to each job
         mt = MatchTscToJob(original_ict_skills, mcf_jobpostings_processed_folder, job_tsc_cosine, mcf_jobpostings_final,
-                           cosine_threshold=0.3)
+                           cosine_threshold=0.4)
         mt.run()
 
 
