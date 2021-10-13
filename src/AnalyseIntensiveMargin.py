@@ -47,6 +47,9 @@ class AnalyseIntensiveMargin:
         self.tsc_categories_cdf(type='ict')
         self.tsc_categories_cdf(type='nonict')
 
+        count_programming_by_ssoc = self.count_programming_in_ssoc()
+        self.prop_programming_in_ssoc(count_programming_by_ssoc)
+
         self.programming_word_clouds()
         self.overall_word_clouds()
 
@@ -275,6 +278,31 @@ class AnalyseIntensiveMargin:
         filepath = self.analysis_filepath.format('prop_jobs_change_by_tsc_category')
         helper.save_csv(df, filepath)
 
+    def count_programming_in_ssoc(self):
+        df = self.jobs.dropna(subset=['programming_languages'])
+        df['programming_language'] = df['programming_languages'].apply(lambda x: x.split(';'))
+        df = df.explode('programming_language')
+
+        # for each ssoc and year, get the freq count of each programming language
+        df = df.groupby(['SSOC4D', 'year', 'programming_language'])['JOB_POST_DESC'].count().reset_index()
+        df.rename(columns={'JOB_POST_DESC': 'count'}, inplace=True)
+
+        return df
+
+    def prop_programming_in_ssoc(self, count_programming_by_ssoc):
+        # get the number of jobs in ssoc and year
+        df = self.jobs.groupby(['SSOC4D', 'year'])['JOB_POST_DESC'].count().reset_index()
+        df.rename(columns={'JOB_POST_DESC': 'total_jobs_in_ssoc_year'}, inplace=True)
+
+        # merge the 2 dfs
+        df = df.merge(count_programming_by_ssoc, on=['SSOC4D', 'year'])
+
+        # get proportion of jobs in ssoc requiring each programming language
+        df['prop_jobs_requiring_programming_language_in_ssoc_year'] = df['count'] / df['total_jobs_in_ssoc_year']
+
+        filepath = self.analysis_filepath.format('prop_programming_by_ssoc')
+        helper.save_csv(df, filepath)
+
     def programming_word_clouds(self):
         # set font
         fontpath = 'C://Windows/Fonts/Arial.ttf'
@@ -356,8 +384,8 @@ class AnalyseIntensiveMargin:
             # Create a wordcloud and save to img folder
             plt.figure(figsize=(10, 8))
             wordcloud = WordCloud(max_words=50, background_color='white', prefer_horizontal=1, colormap=colors[year],
-                                  width=2500, height=1500, stopwords=list(STOPWORDS) + config.my_stopwords).generate(
-                text)
+                                  relative_scaling=1, width=2500, height=1500,
+                                  stopwords=list(STOPWORDS) + config.my_stopwords, font_path=fontpath).generate(text)
             plt.axis("off")
 
             wordcloud.to_file(self.img_filepath.format('desc_ssoc{}_{}'.format(ssoc, year)))
