@@ -1,20 +1,17 @@
 import os
 import pandas as pd
 import config
-import re
+import helper
 from datetime import datetime
 
 
 class ProcessMCFJobs:
-    def __init__(self, postings_dir, output_filepath, ssoc2015_to_2020_filepath, programlanguages_filepath):
+    def __init__(self, postings_dir, output_filepath, ssoc2015_to_2020_filepath):
         self.postings_dir = postings_dir
         self.output_filepath = output_filepath
         self.ssoc2015_to_2020_filepath = ssoc2015_to_2020_filepath
-        self.programlanguages_filepath = programlanguages_filepath
 
         self.ssoc_mapping = pd.DataFrame()
-        self.languages = []
-        self.ngram_languages = []
 
     def run(self):
         self.read_data()
@@ -27,12 +24,6 @@ class ProcessMCFJobs:
         cols = ['SSOC 2020', 'SSOC 2015 (Version 2018)']
         self.ssoc_mapping[cols] = self.ssoc_mapping[cols].astype(str)
         self.ssoc_mapping = self.ssoc_mapping[cols]
-
-        # get list of programming languages
-        df = pd.read_csv(self.programlanguages_filepath, header=None)
-        languages = [x.strip() for x in df[0].tolist()]
-        self.languages = [x for x in languages if ' ' not in x]
-        self.ngram_languages = [x for x in languages if ' ' in x]
 
     def job_to_ssoc(self, folder):
         # Combine job info and detail files
@@ -63,7 +54,7 @@ class ProcessMCFJobs:
             df = self.clean_final_df(merged)
 
             # get programming languages
-            df['programming_languages'] = df['JOB_POST_DESC'].apply(self.extract_programming_languages)
+            df['programming_languages'] = helper.extract_programming_languages(df['JOB_POST_DESC'])
 
             output = self.output_filepath.format(path.split('/')[-1].split('.')[0])
             df.to_csv(output, index=False)
@@ -134,21 +125,3 @@ class ProcessMCFJobs:
         df = df[df['JOB_POST_DESC'] != '']
 
         return df
-
-    def extract_programming_languages(self, job_description):
-        languages_in_desc = []
-
-        # title case job description
-        if job_description.isupper() or job_description.islower():
-            job_description = job_description.title()
-
-        # get single word programming languages from job description
-        job_desc_tokens = re.findall(r'[^,?():;/{}!.\s]+', job_description)
-        languages_in_desc += [x for x in self.languages if x in job_desc_tokens]
-
-        # get multiple word programming languages from job description
-        languages_in_desc += [x for x in self.ngram_languages if x in job_description]
-
-        languages = ';'.join(languages_in_desc)
-
-        return languages

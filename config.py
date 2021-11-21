@@ -31,7 +31,7 @@ filepaths = {
         'folder': 'data/jobpostings_final/',
         'filename': '{}_final.csv'
     },
-    'mcf_jobpostings_original': {
+    'mcf_jobpostings_raw': {
         'folder': 'data/jobpostings_raw/',
     },
     'mcf_jobpostings_processed': {
@@ -41,6 +41,29 @@ filepaths = {
     'programming_languages': {
         'folder': 'data/',
         'filename': 'programminglanguages.txt'
+    },
+    'resume_ability_cosine_matrix': {
+        'folder': 'data/resume_ability_cosine/',
+        'filename': '{}_cosine.npy'
+    },
+    'resume_tsc_cosine_matrix': {
+        'folder': 'data/resume_tsc_cosine/',
+        'filename': '{}_cosine.npy'
+    },
+    'resumes_bert': {
+        'folder': 'data/resumes_bert/',
+        'filename': '{}_bert.npy'
+    },
+    'resumes_final': {
+        'folder': 'data/resumes_final/',
+        'filename': '{}_final.csv'
+    },
+    'resumes_raw': {
+        'folder': 'data/resumes_raw/',
+    },
+    'resumes_processed': {
+        'folder': 'data/resumes_processed/',
+        'filename': 'resumes_{}.csv'
     },
     'role_to_tsc': {
         'folder': 'data/ssg/',
@@ -99,5 +122,4 @@ jobposting_detail_info_mapping = {
     'data/jobpostings_raw/JOB_POST_DETAILS_202105.txt': 'data/jobpostings_raw/JOB_POST_202105.txt',
     'data/jobpostings_raw/JOB_POST_DETAILS_202106.txt': 'data/jobpostings_raw/JOB_POST_202106.txt',
     'data/jobpostings_raw/JOB_POST_DETAILS_202107.txt': 'data/jobpostings_raw/JOB_POST_202107.txt',
-
 }

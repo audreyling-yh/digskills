@@ -1,16 +1,19 @@
 import os
 import config
+import helper
 import sys
 
 from src.CalculateJobAbilityCosine import CalculateJobAbilityCosine
 from src.CalculateJobTscCosine import CalculateJobTscCosine
 from src.ConvertAbilitiesToBert import ConvertAbilitiesToBert
 from src.ConvertMCFJobsToBert import ConvertMCFJobsToBert
+from src.ConvertResumesToBert import ConvertResumesToBert
 from src.AnalyseExtensiveMargin import AnalyseExtensiveMargin
 from src.AnalyseIntensiveMargin import AnalyseIntensiveMargin
+from src.MatchTscToJob import MatchTscToJob
 from src.ProcessICTJobs import ProcessICTJobs
 from src.ProcessMCFJobs import ProcessMCFJobs
-from src.MatchTscToJob import MatchTscToJob
+from src.ProcessResumes import ProcessResumes
 
 # Create folders
 filepaths = config.filepaths
@@ -19,33 +22,38 @@ for i in folders:
     os.makedirs(i, exist_ok=True)
 
 # Get filepaths
-original_ict_skills = filepaths['ssg_ict_skills_original']['folder'] + filepaths['ssg_ict_skills_original']['filename']
-original_role_to_tsc = filepaths['role_to_tsc']['folder'] + filepaths['role_to_tsc']['filename']
-original_ssoc2015_to_2020 = filepaths['ssoc2015_to_2020_original']['folder'] + filepaths['ssoc2015_to_2020_original'][
-    'filename']
+original_ict_skills = helper.get_filepath('ssg_ict_skills_original')
+original_role_to_tsc = helper.get_filepath('role_to_tsc')
+original_ssoc2015_to_2020 = helper.get_filepath('ssoc2015_to_2020_original')
 
-programming_languages = filepaths['programming_languages']['folder'] + filepaths['programming_languages']['filename']
-dau_ssoc_index = filepaths['ssoc_index_dau']['folder'] + filepaths['ssoc_index_dau']['filename']
+dau_ssoc_index = helper.get_filepath('ssoc_index_dau')
 
-abilities = filepaths['abilities']['folder'] + filepaths['abilities']['filename']
-ict_jobs_with_dau_ssoc = filepaths['digital_jobs_dau_ssoc']['folder'] + filepaths['digital_jobs_dau_ssoc']['filename']
+abilities = helper.get_filepath('abilities')
+ict_jobs_with_dau_ssoc = helper.get_filepath('digital_jobs_dau_ssoc')
 
-mcf_jobpostings_processed = filepaths['mcf_jobpostings_processed']['folder'] + filepaths['mcf_jobpostings_processed'][
-    'filename']
-mcf_jobpostings_bert = filepaths['mcf_jobpostings_bert']['folder'] + filepaths['mcf_jobpostings_bert']['filename']
-mcf_jobpostings_final = filepaths['mcf_jobpostings_final']['folder'] + filepaths['mcf_jobpostings_final']['filename']
+mcf_jobpostings_processed = helper.get_filepath('mcf_jobpostings_processed')
+mcf_jobpostings_bert = helper.get_filepath('mcf_jobpostings_bert')
+mcf_jobpostings_final = helper.get_filepath('mcf_jobpostings_final')
 
-job_ability_cosine = filepaths['job_ability_cosine_matrix']['folder'] + filepaths['job_ability_cosine_matrix'][
-    'filename']
-job_tsc_cosine = filepaths['job_tsc_cosine_matrix']['folder'] + filepaths['job_tsc_cosine_matrix']['filename']
+resumes_processed = helper.get_filepath('resumes_processed')
+resumes_bert = helper.get_filepath('resumes_bert')
+resumes_final = helper.get_filepath('resumes_final')
 
-analysis = filepaths['analysis']['folder'] + filepaths['analysis']['filename']
-img = filepaths['img']['folder'] + filepaths['img']['filename']
+job_ability_cosine = helper.get_filepath('job_ability_cosine_matrix')
+job_tsc_cosine = helper.get_filepath('job_tsc_cosine_matrix')
+resume_ability_cosine = helper.get_filepath('resume_ability_cosine_matrix')
+resume_tsc_cosine = helper.get_filepath('resume_tsc_cosine_matrix')
+
+analysis = helper.get_filepath('analysis')
+img = helper.get_filepath('img')
 
 # Get folders
-mcf_jobpostings_raw_folder = filepaths['mcf_jobpostings_original']['folder']
+mcf_jobpostings_raw_folder = filepaths['mcf_jobpostings_raw']['folder']
 mcf_jobpostings_processed_folder = filepaths['mcf_jobpostings_processed']['folder']
 mcf_jobpostings_bert_folder = filepaths['mcf_jobpostings_bert']['folder']
+resumes_raw_folder = filepaths['resumes_raw']['folder']
+resumes_processed_folder = filepaths['resumes_processed']['folder']
+resumes_bert_folder = filepaths['resumes_bert']['folder']
 
 if __name__ == '__main__':
     def process_frameworks():
@@ -58,16 +66,23 @@ if __name__ == '__main__':
         mi.run()
 
 
-    def process_jobpostings():
-        # tag each job posting with ssoc4d (2020) and AES sector of the hiring org, and remove non-PMET jobs
-        mm = ProcessMCFJobs(mcf_jobpostings_raw_folder, mcf_jobpostings_processed, original_ssoc2015_to_2020,
-                            programming_languages)
-        mm.run()
+    def process():
+        # # tag each job posting with ssoc4d (2020) and AES sector of the hiring org, and remove non-PMET jobs
+        # mm = ProcessMCFJobs(mcf_jobpostings_raw_folder, mcf_jobpostings_processed, original_ssoc2015_to_2020)
+        # mm.run()
+        #
+        # # combine all job description text files into a dataframe and obtain bert embeddings for each job
+        # # CAUTION: Will take about 8 hours to run on GPU
+        # cm = ConvertMCFJobsToBert(mcf_jobpostings_processed_folder, mcf_jobpostings_bert)
+        # cm.run()
 
-        # combine all job description text files into a dataframe and obtain bert embeddings for each job
-        # CAUTION: Will take about 8 hours to run on GPU
-        cm = ConvertMCFJobsToBert(mcf_jobpostings_processed_folder, mcf_jobpostings_bert)
-        cm.run()
+        # clean resumes
+        pr = ProcessResumes(resumes_raw_folder, resumes_processed)
+        pr.run()
+
+        # combine all resume text files into a dataframe and obtain bert embeddings for each resume
+        cr = ConvertResumesToBert(resumes_processed_folder, resumes_bert)
+        cr.run()
 
 
     def match():
@@ -85,27 +100,41 @@ if __name__ == '__main__':
                            cosine_threshold=0.4)
         mt.run()
 
+        # get cosine similarity between each resume and ability
+        cj = CalculateJobAbilityCosine(abilities, resumes_bert_folder, resume_ability_cosine)
+        cj.run()
+
+        # get cosine similarity between each resume and tsc
+        cj = CalculateJobTscCosine(abilities, original_ict_skills, resumes_bert_folder, resume_ability_cosine,
+                                   resume_tsc_cosine)
+        cj.run()
+
+        # get tscs matched to each resume
+        mt = MatchTscToJob(original_ict_skills, resumes_processed_folder, resume_tsc_cosine, resumes_final,
+                           cosine_threshold=0.4)
+        mt.run()
+
 
     def analyse():
-        # Extensive margin
+        # Extensive margin (demand)
         ae = AnalyseExtensiveMargin(analysis, ict_jobs_with_dau_ssoc)
         ae.run()
 
-        # Intensive margin
+        # Intensive margin (demand)
         ai = AnalyseIntensiveMargin(img, analysis, ict_jobs_with_dau_ssoc)
         ai.run()
 
 
     processes_map = {
         'PROCESS_FW': process_frameworks,
-        'PROCESS_JOBS': process_jobpostings,
+        'PROCESS': process,
         'MATCH': match,
         'ANALYSIS': analyse
     }
 
     processes = [
         'PROCESS_FW',
-        'PROCESS_JOBS',
+        'PROCESS',
         'MATCH',
         'ANALYSIS'
     ]

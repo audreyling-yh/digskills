@@ -1,8 +1,14 @@
 import os
+import re
 import pandas as pd
 import config
 
 filepaths = config.filepaths
+
+
+def get_filepath(key):
+    path = filepaths[key]['folder'] + filepaths[key]['filename']
+    return path
 
 
 def get_ict_skills(tsc_df):
@@ -21,6 +27,46 @@ def clean_abilities(text):
     abilities = [x.lower() for x in abilities if x != '' and not x.isspace()]
 
     return abilities
+
+
+def read_txt(filepath):
+    # read text into string
+    with open(filepath, 'r', encoding='utf-8') as f:
+        lines = f.readlines()
+        text = ' '.join([x.strip() for x in lines])
+
+    return text
+
+
+def extract_programming_languages(series):
+    # get list of programming languages
+    filepath = get_filepath('programming_languages')
+    df = pd.read_csv(filepath, header=None)
+    languages = [x.strip() for x in df[0].tolist()]
+    languages = [x for x in languages if ' ' not in x]
+    ngram_languages = [x for x in languages if ' ' in x]
+
+    # extract language from each job posting/resume
+    extracted_languages = []
+    for i in series:
+        languages_in_desc = []
+
+        # title case job description/resume
+        if i.isupper() or i.islower():
+            i = i.title()
+
+        # get single word programming languages from job description/resume
+        tokens = re.findall(r'[^,?():;/{}!.\s]+', i)
+        languages_in_desc += [x for x in languages if x in tokens]
+
+        # get multiple word programming languages from job description/resume
+        languages_in_desc += [x for x in ngram_languages if x in i]
+
+        languages = ';'.join(languages_in_desc)
+
+        extracted_languages.append(languages)
+
+    return extracted_languages
 
 
 def get_all_postings():
