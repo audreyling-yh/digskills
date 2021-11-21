@@ -67,14 +67,14 @@ if __name__ == '__main__':
 
 
     def process():
-        # # tag each job posting with ssoc4d (2020) and AES sector of the hiring org, and remove non-PMET jobs
-        # mm = ProcessMCFJobs(mcf_jobpostings_raw_folder, mcf_jobpostings_processed, original_ssoc2015_to_2020)
-        # mm.run()
-        #
-        # # combine all job description text files into a dataframe and obtain bert embeddings for each job
-        # # CAUTION: Will take about 8 hours to run on GPU
-        # cm = ConvertMCFJobsToBert(mcf_jobpostings_processed_folder, mcf_jobpostings_bert)
-        # cm.run()
+        # tag each job posting with ssoc4d (2020) and AES sector of the hiring org, and remove non-PMET jobs
+        mm = ProcessMCFJobs(mcf_jobpostings_raw_folder, mcf_jobpostings_processed, original_ssoc2015_to_2020)
+        mm.run()
+
+        # combine all job description text files into a dataframe and obtain bert embeddings for each job
+        # CAUTION: Will take about 8 hours to run on GPU
+        cm = ConvertMCFJobsToBert(mcf_jobpostings_processed_folder, mcf_jobpostings_bert)
+        cm.run()
 
         # clean resumes
         pr = ProcessResumes(resumes_raw_folder, resumes_processed)
