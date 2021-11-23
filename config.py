@@ -15,9 +15,9 @@ filepaths = {
         'folder': 'data/job_tsc_cosine/',
         'filename': '{}_cosine.npy'
     },
-    'digital_jobs_dau_ssoc': {
+    'digital_jobs_ssoc': {
         'folder': 'data/ict_jobs/',
-        'filename': 'ict_jobs_dau_ssoc.csv'
+        'filename': 'ict_jobs_ssoc.csv'
     },
     'img': {
         'folder': 'img/',
@@ -72,6 +72,10 @@ filepaths = {
     'ssg_ict_skills_original': {
         'folder': 'data/ssg/',
         'filename': 'ict_skills.csv'
+    },
+    'ssoc_index_dos': {
+        'folder': 'data/ssoc/',
+        'filename': 'SSOC2020 Alphabetical Index.xlsx'
     },
     'ssoc2015_to_2020_original': {
         'folder': 'data/ssoc/',

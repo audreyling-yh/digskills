@@ -8,6 +8,7 @@ from src.CalculateJobTscCosine import CalculateJobTscCosine
 from src.ConvertAbilitiesToBert import ConvertAbilitiesToBert
 from src.ConvertMCFJobsToBert import ConvertMCFJobsToBert
 from src.ConvertResumesToBert import ConvertResumesToBert
+from src.AnalyseGap import AnalyseGap
 from src.AnalyseExtensiveMargin import AnalyseExtensiveMargin
 from src.AnalyseIntensiveMargin import AnalyseIntensiveMargin
 from src.MatchTscToJob import MatchTscToJob
@@ -27,9 +28,10 @@ original_role_to_tsc = helper.get_filepath('role_to_tsc')
 original_ssoc2015_to_2020 = helper.get_filepath('ssoc2015_to_2020_original')
 
 dau_ssoc_index = helper.get_filepath('ssoc_index_dau')
+ssoc_index = helper.get_filepath('ssoc_index_dos')
 
 abilities = helper.get_filepath('abilities')
-ict_jobs_with_dau_ssoc = helper.get_filepath('digital_jobs_dau_ssoc')
+ict_jobs_with_ssoc = helper.get_filepath('digital_jobs_ssoc')
 
 mcf_jobpostings_processed = helper.get_filepath('mcf_jobpostings_processed')
 mcf_jobpostings_bert = helper.get_filepath('mcf_jobpostings_bert')
@@ -61,8 +63,8 @@ if __name__ == '__main__':
         ca = ConvertAbilitiesToBert(original_ict_skills, abilities)
         ca.run()
 
-        # tag each ict job with an ssoc4d 2020 (dau mapping)
-        mi = ProcessICTJobs(original_role_to_tsc, dau_ssoc_index, ict_jobs_with_dau_ssoc)
+        # tag each ict job with an ssoc
+        mi = ProcessICTJobs(original_role_to_tsc, ssoc_index, ict_jobs_with_ssoc)
         mi.run()
 
 
@@ -81,6 +83,7 @@ if __name__ == '__main__':
         pr.run()
 
         # combine all resume text files into a dataframe and obtain bert embeddings for each resume
+        # CAUTION: Will take about 4 hours to run on GPU
         cr = ConvertResumesToBert(resumes_processed_folder, resumes_bert)
         cr.run()
 
@@ -117,12 +120,16 @@ if __name__ == '__main__':
 
     def analyse():
         # Extensive margin (demand)
-        ae = AnalyseExtensiveMargin(analysis, ict_jobs_with_dau_ssoc)
+        ae = AnalyseExtensiveMargin(analysis, ict_jobs_with_ssoc)
         ae.run()
 
         # Intensive margin (demand)
-        ai = AnalyseIntensiveMargin(img, analysis, ict_jobs_with_dau_ssoc)
+        ai = AnalyseIntensiveMargin(img, analysis, ict_jobs_with_ssoc)
         ai.run()
+
+        # analyse tsc gap
+        ag = AnalyseGap(analysis)
+        ag.run()
 
 
     processes_map = {

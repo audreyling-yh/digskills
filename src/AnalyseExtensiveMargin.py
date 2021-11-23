@@ -12,7 +12,7 @@ class AnalyseExtensiveMargin:
     def run(self):
         self.jobs = helper.get_all_postings()
         self.jobs.dropna(subset=['AES'], inplace=True)
-        self.indicate_ict_job()
+        self.jobs = helper.indicate_ict_job(self.jobs)
 
         year_job_count = self.count_jobs_by_year()
 
@@ -28,14 +28,6 @@ class AnalyseExtensiveMargin:
         ssoc_ict_job_count = self.count_ict_ssoc_by_sector()
         ssoc_ict_job_prop = self.prop_ict_ssoc_by_sector(sector_ict_job_count, ssoc_ict_job_count)
         self.percent_change_ict_ssoc_by_sector(ssoc_ict_job_prop)
-
-    def indicate_ict_job(self):
-        # get ICT SSOC4Ds
-        ict_jobs = pd.read_csv(self.ict_jobs_filepath)
-        ict_ssoc = ict_jobs['SSOC4DMapping'].unique().tolist()
-
-        # true if the job's SSOC4D is an ICT SSOC4D
-        self.jobs['ict'] = self.jobs['SSOC4D'].isin(ict_ssoc)
 
     def count_jobs_by_year(self):
         # count the total number of jobs each year
@@ -93,13 +85,13 @@ class AnalyseExtensiveMargin:
         self.jobs = self.jobs[self.jobs['AES'].isin(sectors)]
 
     def count_ict_ssoc_by_sector(self):
-        # count the total number of jobs in each ICT SSOC4D in each sector each year
+        # count the total number of jobs in each ICT SSOC in each sector each year
         df = self.jobs[self.jobs['ict']]
-        df = df.groupby(['year', 'AES', 'SSOC4D'])['JOB_POST_ID'].count().reset_index()
+        df = df.groupby(['year', 'AES', 'SSOC 2020'])['JOB_POST_ID'].count().reset_index()
         df.rename(columns={'JOB_POST_ID': 'job_count'}, inplace=True)
 
         # fill 0 for years with 0 jobs
-        temp = df.groupby(['AES', 'SSOC4D'])['year'].unique().reset_index()
+        temp = df.groupby(['AES', 'SSOC 2020'])['year'].unique().reset_index()
         temp['numyears'] = temp['year'].apply(len)
         temp = temp[temp['numyears'] != 4]
 
@@ -109,9 +101,9 @@ class AnalyseExtensiveMargin:
             missing_years = [x for x in all_years if x not in existing_years]
 
             aes = row['AES']
-            ssoc = row['SSOC4D']
+            ssoc = row['SSOC 2020']
 
-            temp_df = pd.DataFrame(data={'year': missing_years, 'AES': aes, 'SSOC4D': ssoc, 'job_count': 0})
+            temp_df = pd.DataFrame(data={'year': missing_years, 'AES': aes, 'SSOC 2020': ssoc, 'job_count': 0})
             df = df.append(temp_df, ignore_index=True)
 
         return df
@@ -137,20 +129,20 @@ class AnalyseExtensiveMargin:
     def percent_change_ict_ssoc_by_sector(self, ssoc_ict_job_prop):
         # get percentage diff between 2019 and 2020
         df = ssoc_ict_job_prop[ssoc_ict_job_prop['year'].isin(['2019', '2020'])]
-        df.sort_values(by=['AES', 'SSOC4D', 'year'], ascending=True, inplace=True)
+        df.sort_values(by=['AES', 'SSOC 2020', 'year'], ascending=True, inplace=True)
         df['2020-2019_%diff'] = df['%'].diff()
         df = df[df['year'] == '2020']
-        df = df[['AES', 'SSOC4D', '2020-2019_%diff']]
+        df = df[['AES', 'SSOC 2020', '2020-2019_%diff']]
 
         # get percentage diff between 2018 and 2021
         df2 = ssoc_ict_job_prop[ssoc_ict_job_prop['year'].isin(['2018', '2021'])]
-        df2.sort_values(by=['AES', 'SSOC4D', 'year'], ascending=True, inplace=True)
+        df2.sort_values(by=['AES', 'SSOC 2020', 'year'], ascending=True, inplace=True)
         df2['2021-2018_%diff'] = df2['%'].diff()
         df2 = df2[df2['year'] == '2021']
-        df2 = df2[['AES', 'SSOC4D', '2021-2018_%diff']]
+        df2 = df2[['AES', 'SSOC 2020', '2021-2018_%diff']]
 
         # combine the dfs
-        df = df.merge(df2, on=['AES', 'SSOC4D'])
+        df = df.merge(df2, on=['AES', 'SSOC 2020'])
 
         filepath = self.analysis_filepath.format('ict_jobs_%change_by_ssoc')
         helper.save_csv(df, filepath)

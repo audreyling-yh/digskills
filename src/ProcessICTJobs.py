@@ -2,48 +2,68 @@ import pandas as pd
 
 
 class ProcessICTJobs:
-    def __init__(self, ssg_jobs_filepath, dau_ssoc_index_filepath, output_filepath):
+    def __init__(self, ssg_jobs_filepath, ssoc_index_filepath, output_filepath):
         self.ssg_jobs_filepath = ssg_jobs_filepath
-        self.dau_ssoc_index_filepath = dau_ssoc_index_filepath
+        self.ssoc_index_filepath = ssoc_index_filepath
         self.output_filepath = output_filepath
 
+        self.ssg_jobs = pd.DataFrame()
+        self.ssoc_index = pd.DataFrame()
+        self.df = pd.DataFrame()
+
     def run(self):
-        ssg_jobs = pd.read_csv(self.ssg_jobs_filepath)
-        dau_ssoc = pd.read_csv(self.dau_ssoc_index_filepath)
+        self.read_data()
+        self.clean_ssoc_index()
+        self.clean_ssg_jobs()
 
-        ict = self.get_ict_jobs(ssg_jobs)
-        df = self.map_role_to_ssoc(ict, dau_ssoc)
-        df.to_csv(self.output_filepath, index=False)
+        self.get_ict_jobs()
+        self.map_role_to_ssoc()
+        self.df.to_csv(self.output_filepath, index=False)
 
-    def get_ict_jobs(self, df):
+    def read_data(self):
+        # read ssg skills framework job roles
+        self.ssg_jobs = pd.read_csv(self.ssg_jobs_filepath)
+
+        # read ssoc-job role index
+        self.ssoc_index = pd.read_excel(self.ssoc_index_filepath, skiprows=7)
+
+    def clean_ssoc_index(self):
+        # filter to Skills Framework job roles
+        self.ssoc_index = self.ssoc_index[self.ssoc_index["Singapore Skills Framework's Job Roles*"] == 'x']
+
+        # lowercase job roles
+        self.ssoc_index['job_role'] = self.ssoc_index['SSOC 2020 Alphabetical Index Description'].apply(
+            lambda x: x.lower())
+
+        # remove anything in brackets
+        self.ssoc_index['job_role'] = self.ssoc_index['job_role'].apply(lambda x: x.split('(')[0].strip())
+
+    def clean_ssg_jobs(self):
+        # text cleaning
+        self.ssg_jobs['job_role'] = self.ssg_jobs['job_role'].apply(
+            lambda x: '/'.join([i.strip() for i in x.split('/')]))
+
+    def get_ict_jobs(self):
         # Filter all SSG jobs to only ICT ones
-        df = df[df['sector'] == 'infocomm technology']
+        self.ssg_jobs = self.ssg_jobs[self.ssg_jobs['sector'] == 'infocomm technology']
 
         # Filter out sales track
-        df = df[df['track'] != 'sales and marketing']
+        self.ssg_jobs = self.ssg_jobs[self.ssg_jobs['track'] != 'sales and marketing']
 
-        # Get clean job name
-        df['job_role'] = df['job_role'].apply(lambda x: '/'.join([i.strip() for i in x.split('/')]) if '/' in x else x)
-
-        return df
-
-    def map_role_to_ssoc(self, ict, dau_ssoc):
-        # Get ssoc1d from ssoc4d
-        dau_ssoc['SSOC4DMapping'] = dau_ssoc['SSOC4DMapping'].astype(str)
-        dau_ssoc['SSOC1D'] = dau_ssoc['SSOC4DMapping'].apply(lambda x: x[0])
-
-        # All 102 job roles will be mapped
-        # Each ICT role is mapped to 1 ssoc4d (by coincidence; the dau mapping can be one role to many SSOC)
-        df = ict.merge(dau_ssoc[['role_id', 'job_role', 'SSOC4DMapping', 'SSOC1D']], on=['role_id', 'job_role'],
-                       how='left')
+    def map_role_to_ssoc(self):
+        # merge dfs
+        self.df = self.ssg_jobs.merge(self.ssoc_index[['job_role', 'SSOC 2020']], on='job_role', how='left')
 
         # Drop not-purely-ICT SSOC4Ds
+        self.df['ssoc4d'] = self.df['SSOC 2020'].apply(lambda x: x[:4])
         excluded_ssocs = ['1221',  # Sales and business dev managers
                           '2411',  # accountants
                           '2433',  # specialised goods sales professionals
                           '1323',  # construction managers
                           '2431'  # advertising and markerting professionals
                           ]
-        df = df[~df['SSOC4DMapping'].isin(excluded_ssocs)]
+        self.df = self.df[~self.df['ssoc4d'].isin(excluded_ssocs)]
 
-        return df
+        # clean df
+        self.df.drop(columns=['ssoc4d', 'tsc_id', 'tsc_category', 'tsc_title', 'proficiency_level'], inplace=True)
+        self.df.drop_duplicates(inplace=True)

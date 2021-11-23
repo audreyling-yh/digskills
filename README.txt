@@ -26,3 +26,6 @@ Compiled from https://www.skillsfuture.gov.sg/skills-framework/ict
 
 programminglanguages.txt
 Compiled from https://spectrum.ieee.org/top-programming-languages/#toggle-gdpr (Toggle to rank by jobs)
+
+SSOC2020 Alphabetical Index.xlsx
+Downloaded from https://www.singstat.gov.sg/standards/standards-and-classifications/ssoc

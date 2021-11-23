@@ -45,7 +45,7 @@ class ProcessMCFJobs:
             info = self.get_ssoc4d_and_1d(info)
 
             # Merge job info (SSOC2020 etc.) with job details (job description etc.)
-            merged = detail.merge(info[['JOB_POST_ID', 'SSOC4D', 'SSOC1D', 'HIRE_ORG_SSIC_CODE', 'AES']],
+            merged = detail.merge(info[['JOB_POST_ID', 'SSOC 2020', 'SSOC4D', 'SSOC1D', 'HIRE_ORG_SSIC_CODE', 'AES']],
                                   on='JOB_POST_ID', how='inner')
 
             # drop non-pmet jobs
@@ -120,8 +120,8 @@ class ProcessMCFJobs:
         df['month'] = df['date'].apply(lambda x: x.month)
 
         # clean file
-        df.drop_duplicates(inplace=True)
         df.dropna(subset=['JOB_POST_DESC'], inplace=True)
+        df.drop_duplicates(subset=['JOB_POST_DESC'], keep='last', inplace=True)
         df = df[df['JOB_POST_DESC'] != '']
 
         return df
