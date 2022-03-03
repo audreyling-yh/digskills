@@ -1,9 +1,10 @@
+vaex
 pandas
-transformers
 xlrd==1.2.0
 seaborn
-networkx
 matplotlib
 scikit-learn
 sentence-transformers
-wordcloud
+docx2txt
+python-docx
+flashtext

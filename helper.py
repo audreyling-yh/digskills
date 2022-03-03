@@ -13,10 +13,15 @@ def get_filepath(key):
 
 
 def get_ict_skills(tsc_df):
-    # filter out not-purely-tech TSCs
-    exclude_categories = ['Business Finance', 'General Management', 'People Development', 'Sales and Marketing',
+    # filter out not-purely-tech TSC categories
+    exclude_categories = ['Business and Project Management', 'Business Finance', 'General Management',
+                          'Governance and Compliance', 'People Development', 'Sales and Marketing',
                           'Stakeholder and Contract Management']
     tsc_df = tsc_df[~tsc_df['tsc_category'].isin(exclude_categories)]
+
+    # filter out by skill
+    exclude_tscs = ['Organisational Design', 'Networking', 'Business Negotiation']
+    tsc_df = tsc_df[~tsc_df['tsc_title'].isin(exclude_tscs)]
 
     return tsc_df
 
@@ -32,15 +37,6 @@ def indicate_ict_job(df):
     df['ict'] = df['SSOC 2020'].isin(ict_ssoc)
 
     return df
-
-
-def clean_abilities(text):
-    # split abilities into one list element per bullet point
-    abilities = text.split('•')
-    abilities = [x.strip() for x in abilities]
-    abilities = [x.lower() for x in abilities if x != '' and not x.isspace()]
-
-    return abilities
 
 
 def read_txt(filepath):

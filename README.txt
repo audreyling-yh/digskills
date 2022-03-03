@@ -1,7 +1,8 @@
 Packages
 ---
 pip install -r requirements.txt
-conda install pytorch torchvision torchaudio cudatoolkit=11.1 -c pytorch -c conda-forge
+pip uninstall torch
+conda install pytorch torchvision torchaudio cudatoolkit=11.3 -c pytorch -c conda-forge
 
 
 Data sources

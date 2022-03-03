@@ -1,45 +1,43 @@
-import pandas as pd
 import torch
-import helper
+import pandas as pd
+import numpy as np
 from sentence_transformers import SentenceTransformer
 
 
 class ConvertAbilitiesToBert:
-    def __init__(self, ict_tsc_filepath, output_filepath):
+    def __init__(self, ict_tsc_filepath, abilities_filepath, abilities_bert_filepath):
         self.ict_tsc_filepath = ict_tsc_filepath
-        self.output_filepath = output_filepath
-
-        self.tsc = pd.DataFrame()
-        self.abilities = []
+        self.abilities_filepath = abilities_filepath
+        self.abilities_bert_filepath = abilities_bert_filepath
 
     def run(self):
-        self.tsc = pd.read_csv(self.ict_tsc_filepath)
-        self.tsc = helper.get_ict_skills(self.tsc)
+        tsc = pd.read_csv(self.ict_tsc_filepath)
 
-        self.get_unique_abilities()
-        self.convert_abilities_to_bert()
+        abilities_list = self.get_unique_abilities(tsc)
+        self.convert_abilities_to_bert(abilities_list)
 
-    def get_unique_abilities(self):
+    def get_unique_abilities(self, tsc_df):
         # prep abilities list
-        self.tsc['abilities_clean'] = self.tsc['abilities_list'].apply(helper.clean_abilities)
+        tsc_df['abilities_list'] = tsc_df['abilities_list'].apply(
+            lambda x: [i.strip(" '") for i in x.strip('[]').split("',")])
 
         # get list of unique abilities among ICT TSCs
-        self.abilities = list(set(sum(self.tsc['abilities_clean'].tolist(), [])))
+        abilities = list(set(sum(tsc_df['abilities_list'].tolist(), [])))
+        df = pd.DataFrame(data={'ability': abilities})
+        df.to_csv(self.abilities_filepath, index=False)
 
-    def convert_abilities_to_bert(self):
+        return abilities
+
+    def convert_abilities_to_bert(self, abilities_list):
+        print('Converting {} abilities of digital skills'.format(len(abilities_list)))
+
         # Activate GPU if any
         device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
         model = SentenceTransformer('all-distilroberta-v1').to(device)
 
         # convert to BERT
-        embeddings_list = []
-        for index, text in enumerate(self.abilities):
-            print('Converting ability {} out of {}'.format(index + 1, len(self.abilities)))
+        sentence_embeddings = model.encode(abilities_list).tolist()
 
-            # get sentence embedding
-            sentence_embeddings = model.encode(text).tolist()
-
-            embeddings_list.append(sentence_embeddings)
-
-        abilities_df = pd.DataFrame(data={'ability': self.abilities, 'bert_embeddings': embeddings_list})
-        abilities_df.to_csv(self.output_filepath, index=False)
+        # save as npy file
+        sentence_embeddings = np.asarray(sentence_embeddings)
+        np.save(self.abilities_bert_filepath, sentence_embeddings)

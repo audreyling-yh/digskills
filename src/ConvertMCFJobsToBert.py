@@ -1,5 +1,5 @@
-import pandas as pd
 import os
+import vaex
 import torch
 import numpy as np
 from datetime import datetime
@@ -7,47 +7,59 @@ from sentence_transformers import SentenceTransformer
 
 
 class ConvertMCFJobsToBert:
-    def __init__(self, postings_dir, output_filepath):
-        self.postings_dir = postings_dir
-        self.output_filepath = output_filepath
+    def __init__(self, mcf_processed_folder, mcf_bert_folder, mcf_bert_filepath, overwrite=False):
+        self.mcf_processed_folder = mcf_processed_folder
+        self.mcf_bert_folder = mcf_bert_folder
+        self.mcf_bert_filepath = mcf_bert_filepath
+        self.overwrite = overwrite
 
     def run(self):
-        startTime = datetime.now()
-        self.desc_to_bert()
-        print(datetime.now() - startTime)
+        start_time = datetime.now()
 
-    def desc_to_bert(self):
-        for i in os.listdir(self.postings_dir):
-            filepath = self.postings_dir + i
-            filename_base = i.split('.')[0]
-            print(filename_base)
+        files = [x for x in os.listdir(self.mcf_processed_folder)]
 
-            # read file
-            df = pd.read_csv(filepath)
+        # if true, overwrite all existing bert files; re-process
+        if not self.overwrite:
+            print('NOT overwriting existing bert files')
+            existing_bert_files = [x.replace('.npy', '.hdf5') for x in os.listdir(self.mcf_bert_folder)]
+            files = [x for x in files if x not in existing_bert_files]
 
-            # get job posting descriptions
-            jobdesc = df['JOB_POST_DESC'].tolist()
-            totaljobs = len(jobdesc)
+        # loop for each month
+        for i in files:
+            month = i.split('.')[0].replace('jobsbank_', '')
+            print('Converting {} job postings to bert'.format(month))
 
-            # Activate GPU if any
-            device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
-            model = SentenceTransformer('all-distilroberta-v1').to(device)
+            filepath = self.mcf_processed_folder + i
 
-            embeddings_list = []
-            for index, text in enumerate(jobdesc):
-                # get sentence embeddings
-                text=text.split('.')
-                sentence_embeddings = model.encode(text)
+            # get job descriptions
+            df = vaex.open(filepath)
+            df['JOB_POST_DESC'] = df['JOB_POST_DESC'].str.split('.')
+            jd = df['JOB_POST_DESC'].tolist()
 
-                # get avg embedding across sentences
-                embeddings = np.mean(sentence_embeddings, axis=0)
+            # convert job descriptions to bert
+            self.desc_to_bert(jd, i.split('.')[0])
 
-                embeddings_list.append(embeddings)
+        print(datetime.now() - start_time)
 
-                print('Job {} out of {} done for {} - {} x 1 vector embedding'.format(index + 1, totaljobs, i,
-                                                                                      len(embeddings)))
+    def desc_to_bert(self, jd_list, month):
+        # Activate GPU if any
+        device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
+        model = SentenceTransformer('all-distilroberta-v1').to(device)
 
-            embeddings_list = np.asarray(embeddings_list)
+        total = len(jd_list)
+        embeddings_list = []
+        for index, sentences in enumerate(jd_list):
+            # get sentence embeddings
+            sentence_embeddings = model.encode(sentences)
 
-            output_path = self.output_filepath.format(filename_base)
-            np.save(output_path, embeddings_list)
+            # get avg embedding across sentences
+            embeddings = np.mean(sentence_embeddings, axis=0)
+
+            embeddings_list.append(embeddings)
+
+            print('\tJob {} out of {} done for {}'.format(index + 1, total, month))
+
+        embeddings_list = np.asarray(embeddings_list)
+
+        # save as npy file
+        np.save(self.mcf_bert_filepath.format(month), embeddings_list)
