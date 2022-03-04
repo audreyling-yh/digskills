@@ -63,11 +63,11 @@ class ProcessMCFJobs:
             # indicate if ict role
             df = self.indicate_ict(df)
 
-            # save as hdf5
-            df = df.convert_dtypes()
-            df = df.astype({'JOB_EXP_REQ_YRS': 'float32'})
-            df = vaex.from_pandas(df)
+            # manage object col types
+            df = self.manage_dtypes(df)
 
+            # save as hdf5
+            df = vaex.from_pandas(df)
             df.export(self.mcf_processed_filepath.format(i))
 
     def init_keyword_processer(self):
@@ -97,9 +97,8 @@ class ProcessMCFJobs:
         job_detail_files = [self.mcf_raw_filepath.format(foldername, x) for x in os.listdir(folderpath) if
                             x.startswith('JOB_POST_DETAILS')]
 
-        month = foldername.replace('jobsbank_','')
-        info_df = self.txt_to_df(job_info_files, month, details=False)
-        detail_df = self.txt_to_df(job_detail_files, month, details=True)
+        info_df = self.txt_to_df(job_info_files)
+        detail_df = self.txt_to_df(job_detail_files)
 
         # column cleaning
         detail_df = self.clean_noise(detail_df)
@@ -109,21 +108,20 @@ class ProcessMCFJobs:
 
         return df
 
-    def txt_to_df(self, filepaths, month, details=False):
+    def txt_to_df(self, filepaths):
         print('\tConverting {} to dataframe'.format(filepaths))
-
-        # set delimiter
-        if month >= '202108' and not details:
-            delimiter = '|'
-        else:
-            delimiter = '\t'
 
         # convert txt files to df and combine if more than 2 txt JOB_POST or DETAILS file per folder
         df = pd.DataFrame()
         for i in filepaths:
+
+            # set delimiter
+            with open(i) as f:
+                first_line = f.readline()
+                delimiter = '|' if '|' in first_line else '\t'
+
             temp = pd.read_csv(i, delimiter=delimiter, encoding="ISO-8859-1", error_bad_lines=False,
-                               warn_bad_lines=True,
-                               dtype={'YYYYMM': 'str', 'JOB_POST_ID': 'str'})
+                               warn_bad_lines=True, dtype={'YYYYMM': 'str', 'JOB_POST_ID': 'str'})
             df = pd.concat([df, temp])
 
         df.drop_duplicates(inplace=True)
@@ -218,5 +216,18 @@ class ProcessMCFJobs:
 
         # indicate if a job postings is an ICT job based on SSOC
         df['ict_role'] = df['SSOC 2020'].apply(lambda x: 1 if x in self.ict_ssoc else 0)
+
+        return df
+
+    def manage_dtypes(self, df):
+        # convert object dtype cols
+        df = df.convert_dtypes()
+        coltypes = df.dtypes.to_dict()
+        for k, v in coltypes.items():
+            if v == 'object':
+                try:
+                    df = df.astype({k: 'float32'})
+                except:
+                    df = df.astype({k: 'string'})
 
         return df

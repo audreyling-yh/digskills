@@ -99,7 +99,7 @@ if __name__ == '__main__':
         mm.run()
 
         # convert each month's job postings to bert embeddings
-        # CAUTION: Will take about xxx hours to run on GPU
+        # CAUTION: Will take about 8 hours to run on GPU
         cm = ConvertMCFJobsToBert(mcf_processed_folder, mcf_bert_folder, mcf_bert, overwrite=False)
         cm.run()
 
